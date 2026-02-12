@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/hooks/useAuth";
 import Chat from "./pages/Chat";
 import Auth from "./pages/Auth";
+import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,7 +21,8 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Chat />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/chat" element={<Chat />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -19,7 +19,7 @@ export default function Auth() {
   const [submitting, setSubmitting] = useState(false);
 
   if (loading) return null;
-  if (session) return <Navigate to="/" replace />;
+  if (session) return <Navigate to="/chat" replace />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
