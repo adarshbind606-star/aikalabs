@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
-import { format, isToday, isYesterday } from "date-fns";
+import { isToday, isYesterday } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 interface Conversation {
   id: string;
@@ -22,6 +22,7 @@ interface ChatSidebarProps {
   onDelete: (id: string) => void;
   isOpen: boolean;
   onClose: () => void;
+  activePage?: "chat" | "image";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -44,8 +45,9 @@ function groupByDate(conversations: Conversation[]) {
   return groups;
 }
 
-export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete, isOpen, onClose }: ChatSidebarProps) {
+export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete, isOpen, onClose, activePage = "chat" }: ChatSidebarProps) {
   const { signOut, user } = useAuth();
+  const navigate = useNavigate();
   const groups = groupByDate(conversations);
 
   return (
@@ -63,44 +65,75 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <span className="ml-auto text-xs text-muted-foreground">2.1</span>
         </div>
 
-        <div className="p-3">
-          <Button onClick={onNew} className="w-full gap-2" variant="outline">
-            <Plus className="h-4 w-4" /> New Chat
+        <div className="flex gap-2 border-b border-sidebar-border p-3">
+          <Button
+            onClick={() => { navigate("/chat"); onClose(); }}
+            className="flex-1 gap-2"
+            variant={activePage === "chat" ? "default" : "outline"}
+            size="sm"
+          >
+            <MessageSquare className="h-4 w-4" /> Chat
+          </Button>
+          <Button
+            onClick={() => { navigate("/image-gen"); onClose(); }}
+            className="flex-1 gap-2"
+            variant={activePage === "image" ? "default" : "outline"}
+            size="sm"
+          >
+            <ImagePlus className="h-4 w-4" /> Images
           </Button>
         </div>
 
-        <ScrollArea className="flex-1 px-2">
-          {groups.map((group) => (
-            <div key={group.label} className="mb-3">
-              <p className="mb-1 px-3 text-xs font-medium uppercase text-muted-foreground">{group.label}</p>
-              {group.items.map((c) => (
-                <div
-                  key={c.id}
-                  className={cn(
-                    "group flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-sidebar-accent",
-                    activeId === c.id && "bg-sidebar-accent text-sidebar-accent-foreground"
-                  )}
-                  onClick={() => {
-                    onSelect(c.id);
-                    onClose();
-                  }}
-                >
-                  <MessageSquare className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <span className="flex-1 truncate">{c.title}</span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete(c.id);
-                    }}
-                    className="hidden shrink-0 text-muted-foreground hover:text-destructive group-hover:block"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+        {activePage === "chat" && (
+          <>
+            <div className="p-3">
+              <Button onClick={onNew} className="w-full gap-2" variant="outline">
+                <Plus className="h-4 w-4" /> New Chat
+              </Button>
+            </div>
+
+            <ScrollArea className="flex-1 px-2">
+              {groups.map((group) => (
+                <div key={group.label} className="mb-3">
+                  <p className="mb-1 px-3 text-xs font-medium uppercase text-muted-foreground">{group.label}</p>
+                  {group.items.map((c) => (
+                    <div
+                      key={c.id}
+                      className={cn(
+                        "group flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-sidebar-accent",
+                        activeId === c.id && "bg-sidebar-accent text-sidebar-accent-foreground"
+                      )}
+                      onClick={() => {
+                        onSelect(c.id);
+                        onClose();
+                      }}
+                    >
+                      <MessageSquare className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="flex-1 truncate">{c.title}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(c.id);
+                        }}
+                        className="hidden shrink-0 text-muted-foreground hover:text-destructive group-hover:block"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               ))}
-            </div>
-          ))}
-        </ScrollArea>
+            </ScrollArea>
+          </>
+        )}
+
+        {activePage === "image" && (
+          <div className="flex flex-1 items-center justify-center p-4">
+            <p className="text-center text-sm text-muted-foreground">
+              Create images by describing what you want below ✨
+            </p>
+          </div>
+        )}
 
         <div className="border-t border-sidebar-border p-3">
           <div className="flex items-center gap-2">
