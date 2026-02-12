@@ -17,21 +17,18 @@ serve(async (req) => {
 
     console.log("Generating image for prompt:", prompt);
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
-        messages: [
-          {
-            role: "user",
-            content: `Generate a high-quality image: ${prompt}`,
-          },
-        ],
-        modalities: ["image", "text"],
+        model: "dall-e-3",
+        prompt: prompt,
+        n: 1,
+        size: "1024x1024",
+        quality: "hd",
       }),
     });
 
@@ -57,39 +54,17 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const imageBase64 = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const imageUrl = data.data?.[0]?.url;
 
-    if (!imageBase64) {
+    if (!imageUrl) {
+      console.error("No image URL in response:", JSON.stringify(data));
       return new Response(JSON.stringify({ error: "No image was generated" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Upload to storage
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
-
-    const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
-    const imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
-    const fileName = `generated/${crypto.randomUUID()}.png`;
-
-    const { error: uploadError } = await supabaseAdmin.storage
-      .from("ai-images")
-      .upload(fileName, imageBytes, { contentType: "image/png" });
-
-    if (uploadError) {
-      console.error("Upload error:", uploadError);
-      // Fallback: return base64 directly
-      return new Response(JSON.stringify({ imageUrl: imageBase64 }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { data: urlData } = supabaseAdmin.storage.from("ai-images").getPublicUrl(fileName);
-
-    return new Response(JSON.stringify({ imageUrl: urlData.publicUrl }), {
+    return new Response(JSON.stringify({ imageUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

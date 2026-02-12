@@ -187,7 +187,7 @@ export default function Chat() {
   }, [user, activeConvoId, messages, isStreaming]);
 
   if (loading) return null;
-  if (!session) return <Navigate to="/auth" replace />;
+  if (!session) return <Navigate to="/" replace />;
 
   return (
     <div className="relative flex h-screen overflow-hidden bg-background">
