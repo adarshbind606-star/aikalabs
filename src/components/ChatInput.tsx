@@ -40,7 +40,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask Aika anything... (try 'generate an image of...')"
+          placeholder="Ask Aika anything..."
           rows={1}
           disabled={disabled}
           className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
@@ -50,7 +50,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
         </Button>
       </div>
       <p className="mt-2 text-center text-xs text-muted-foreground">
-        Aika can make mistakes. Tip: say "generate an image of..." for image creation 🌸
+        Aika can make mistakes. Use the Images tab for image generation 🌸
       </p>
     </form>
   );

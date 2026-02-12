@@ -6,7 +6,7 @@ import { ChatSidebar } from "@/components/ChatSidebar";
 import { ChatMessage, ThinkingIndicator } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
 import { SakuraPetals } from "@/components/SakuraPetals";
-import { streamChat, generateImage } from "@/lib/chat-stream";
+import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
 import { Menu, Cherry } from "lucide-react";
 import { toast } from "sonner";
@@ -26,7 +26,7 @@ interface Conversation {
   updated_at: string;
 }
 
-const IMAGE_TRIGGER = /\b(generate|create|draw|make|paint|design)\b.*\b(image|picture|photo|illustration|art|drawing|painting)\b/i;
+
 
 export default function Chat() {
   const { session, user, loading } = useAuth();
@@ -131,27 +131,8 @@ export default function Chat() {
       await updateConversationTitle(convoId!, input);
     }
 
-    const isImageRequest = IMAGE_TRIGGER.test(input);
-
-    if (isImageRequest) {
-      setIsStreaming(true);
-      try {
-        const imageUrl = await generateImage(input);
-        const assistantMsg: Msg = {
-          role: "assistant",
-          content: "Here's the image I generated for you! 🌸",
-          image_url: imageUrl,
-        };
-        setMessages(prev => [...prev, assistantMsg]);
-        await saveMessage(convoId!, assistantMsg);
-      } catch (err: any) {
-        toast.error(err.message || "Failed to generate image");
-      } finally {
-        setIsStreaming(false);
-      }
-    } else {
-      setIsStreaming(true);
-      let assistantSoFar = "";
+    setIsStreaming(true);
+    let assistantSoFar = "";
 
       const chatHistory = [...messages, userMsg].map(m => ({
         role: m.role as "user" | "assistant",
@@ -183,7 +164,6 @@ export default function Chat() {
           toast.error(err);
         },
       });
-    }
   }, [user, activeConvoId, messages, isStreaming]);
 
   if (loading) return null;
@@ -200,6 +180,7 @@ export default function Chat() {
         onDelete={deleteConversation}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        activePage="chat"
       />
 
       <div className="relative z-10 flex flex-1 flex-col">
