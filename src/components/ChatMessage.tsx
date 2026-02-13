@@ -27,7 +27,7 @@ export function ChatMessage({ role, content, imageUrl }: ChatMessageProps) {
         )}
       >
         {imageUrl && (
-          <img src={imageUrl} alt="Generated" className="mb-2 max-w-full rounded-lg" />
+          <img src={imageUrl} alt="Attached" className="mb-2 max-h-60 max-w-full rounded-lg object-cover" />
         )}
         <div className="markdown-content">
           <ReactMarkdown>{content}</ReactMarkdown>
