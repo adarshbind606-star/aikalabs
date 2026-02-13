@@ -1,8 +1,11 @@
+import { useState, useEffect } from "react";
 import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { isToday, isYesterday } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -49,6 +52,29 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
   const groups = groupByDate(conversations);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchAvatar = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("user_id", user.id)
+        .single();
+      if (data?.avatar_url) setAvatarUrl(data.avatar_url);
+    };
+    fetchAvatar();
+
+    const channel = supabase
+      .channel("profile-avatar")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "profiles", filter: `user_id=eq.${user.id}` }, (payload) => {
+        setAvatarUrl((payload.new as any).avatar_url || null);
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [user]);
 
   return (
     <>
@@ -153,9 +179,12 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
 
         <div className="border-t border-sidebar-border p-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
-              {user?.email?.[0]?.toUpperCase() || "?"}
-            </div>
+            <Avatar className="h-8 w-8">
+              {avatarUrl && <AvatarImage src={avatarUrl} alt="Profile" />}
+              <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                {user?.email?.[0]?.toUpperCase() || "?"}
+              </AvatarFallback>
+            </Avatar>
             <span className="flex-1 truncate text-sm text-sidebar-foreground">{user?.email}</span>
             <ThemeToggle />
             <Button variant="ghost" size="icon" onClick={signOut} className="shrink-0">
