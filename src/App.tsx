@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/hooks/useAuth";
 import Chat from "./pages/Chat";
 import ImageGen from "./pages/ImageGen";
+import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
@@ -25,6 +26,7 @@ const App = () => (
               <Route path="/" element={<Landing />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/image-gen" element={<ImageGen />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

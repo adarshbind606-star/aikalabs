@@ -1,4 +1,4 @@
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -22,7 +22,7 @@ interface ChatSidebarProps {
   onDelete: (id: string) => void;
   isOpen: boolean;
   onClose: () => void;
-  activePage?: "chat" | "image";
+  activePage?: "chat" | "image" | "settings";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -65,10 +65,10 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <span className="ml-auto text-xs text-muted-foreground">2.1</span>
         </div>
 
-        <div className="flex gap-2 border-b border-sidebar-border p-3">
+        <div className="flex gap-1.5 border-b border-sidebar-border p-3">
           <Button
             onClick={() => { navigate("/chat"); onClose(); }}
-            className="flex-1 gap-2"
+            className="flex-1 gap-1.5"
             variant={activePage === "chat" ? "default" : "outline"}
             size="sm"
           >
@@ -76,11 +76,19 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </Button>
           <Button
             onClick={() => { navigate("/image-gen"); onClose(); }}
-            className="flex-1 gap-2"
+            className="flex-1 gap-1.5"
             variant={activePage === "image" ? "default" : "outline"}
             size="sm"
           >
             <ImagePlus className="h-4 w-4" /> Images
+          </Button>
+          <Button
+            onClick={() => { navigate("/settings"); onClose(); }}
+            className="flex-1 gap-1.5"
+            variant={activePage === "settings" ? "default" : "outline"}
+            size="sm"
+          >
+            <Settings className="h-4 w-4" /> Settings
           </Button>
         </div>
 
@@ -131,6 +139,14 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <div className="flex flex-1 items-center justify-center p-4">
             <p className="text-center text-sm text-muted-foreground">
               Create images by describing what you want below ✨
+            </p>
+          </div>
+        )}
+
+        {activePage === "settings" && (
+          <div className="flex flex-1 items-center justify-center p-4">
+            <p className="text-center text-sm text-muted-foreground">
+              Manage your profile, appearance, and data ⚙️
             </p>
           </div>
         )}
