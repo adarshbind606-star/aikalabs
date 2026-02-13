@@ -106,7 +106,7 @@ export default function Chat() {
     setConversations(prev => prev.map(c => c.id === convoId ? { ...c, title } : c));
   };
 
-  const handleSend = useCallback(async (input: string) => {
+  const handleSend = useCallback(async (input: string, imageBase64?: string) => {
     if (!user || isStreaming) return;
 
     let convoId = activeConvoId;
@@ -122,7 +122,7 @@ export default function Chat() {
       setActiveConvoId(convoId);
     }
 
-    const userMsg: Msg = { role: "user", content: input };
+    const userMsg: Msg = { role: "user", content: input, image_url: imageBase64 || null };
     setMessages(prev => [...prev, userMsg]);
     await saveMessage(convoId!, userMsg);
 
@@ -134,10 +134,21 @@ export default function Chat() {
     setIsStreaming(true);
     let assistantSoFar = "";
 
-      const chatHistory = [...messages, userMsg].map(m => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      }));
+      const chatHistory = [...messages, userMsg].map(m => {
+        if (m.image_url) {
+          return {
+            role: m.role as "user" | "assistant",
+            content: [
+              ...(m.content ? [{ type: "text" as const, text: m.content }] : []),
+              { type: "image_url" as const, image_url: { url: m.image_url } },
+            ],
+          };
+        }
+        return {
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        };
+      });
 
       const upsertAssistant = (chunk: string) => {
         assistantSoFar += chunk;
