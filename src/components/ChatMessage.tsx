@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { Cherry, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,9 +11,21 @@ interface ChatMessageProps {
 
 export function ChatMessage({ role, content, imageUrl }: ChatMessageProps) {
   const isUser = role === "user";
+  const [fontSize, setFontSize] = useState("medium");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("aika-font-size") || "medium";
+    setFontSize(saved);
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "aika-font-size") setFontSize(e.newValue || "medium");
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   return (
-    <div className={cn("flex gap-3 px-4 py-4", isUser ? "justify-end" : "justify-start")}>
+    <div className={cn("flex gap-3 px-4 py-4", `font-size-${fontSize}`, isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
           <Cherry className="h-5 w-5 text-primary" />
@@ -20,7 +33,7 @@ export function ChatMessage({ role, content, imageUrl }: ChatMessageProps) {
       )}
       <div
         className={cn(
-          "max-w-[75%] rounded-2xl px-4 py-3 text-sm",
+          "max-w-[75%] rounded-2xl px-4 py-3 chat-text",
           isUser
             ? "bg-primary text-primary-foreground rounded-br-md"
             : "bg-card border border-border rounded-bl-md"

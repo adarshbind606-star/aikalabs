@@ -145,3 +145,8 @@
 .markdown-content pre code { @apply bg-transparent p-0; }
 .markdown-content blockquote { @apply border-l-4 border-primary pl-4 italic my-2; }
 .markdown-content a { @apply text-primary underline; }
+
+/* Font size settings */
+.font-size-small .chat-text { font-size: 0.8125rem; line-height: 1.4; }
+.font-size-medium .chat-text { font-size: 0.875rem; line-height: 1.5; }
+.font-size-large .chat-text { font-size: 1rem; line-height: 1.6; }
