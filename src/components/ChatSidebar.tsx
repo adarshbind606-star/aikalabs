@@ -97,30 +97,33 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <span className="ml-auto text-xs text-muted-foreground">2.1</span>
         </div>
 
-        <div className="flex gap-1.5 border-b border-sidebar-border p-3">
+        <div className="flex gap-1 border-b border-sidebar-border p-2">
           <Button
             onClick={() => { navigate("/chat"); onClose(); }}
-            className="flex-1 gap-1.5"
+            className="flex-1 gap-1 min-w-0 px-2"
             variant={activePage === "chat" ? "default" : "outline"}
             size="sm"
           >
-            <MessageSquare className="h-4 w-4" /> Chat
+            <MessageSquare className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs">Chat</span>
           </Button>
           <Button
             onClick={() => { navigate("/image-gen"); onClose(); }}
-            className="flex-1 gap-1.5"
+            className="flex-1 gap-1 min-w-0 px-2"
             variant={activePage === "image" ? "default" : "outline"}
             size="sm"
           >
-            <ImagePlus className="h-4 w-4" /> Images
+            <ImagePlus className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs">Images</span>
           </Button>
           <Button
             onClick={() => { navigate("/settings"); onClose(); }}
-            className="flex-1 gap-1.5"
+            className="flex-1 gap-1 min-w-0 px-2"
             variant={activePage === "settings" ? "default" : "outline"}
             size="sm"
           >
-            <Settings className="h-4 w-4" /> Settings
+            <Settings className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs">Settings</span>
           </Button>
         </div>
 
