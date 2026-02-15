@@ -53,23 +53,29 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
   const navigate = useNavigate();
   const groups = groupByDate(conversations);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
-    const fetchAvatar = async () => {
+    const fetchProfile = async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("avatar_url")
+        .select("avatar_url, display_name")
         .eq("user_id", user.id)
         .single();
-      if (data?.avatar_url) setAvatarUrl(data.avatar_url);
+      if (data) {
+        setAvatarUrl(data.avatar_url || null);
+        setDisplayName(data.display_name || null);
+      }
     };
-    fetchAvatar();
+    fetchProfile();
 
     const channel = supabase
-      .channel("profile-avatar")
+      .channel("profile-sidebar")
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "profiles", filter: `user_id=eq.${user.id}` }, (payload) => {
-        setAvatarUrl((payload.new as any).avatar_url || null);
+        const p = payload.new as any;
+        setAvatarUrl(p.avatar_url || null);
+        setDisplayName(p.display_name || null);
       })
       .subscribe();
 
@@ -185,7 +191,10 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
                 {user?.email?.[0]?.toUpperCase() || "?"}
               </AvatarFallback>
             </Avatar>
-            <span className="flex-1 truncate text-sm text-sidebar-foreground">{user?.email}</span>
+            <div className="flex-1 truncate">
+              {displayName && <p className="truncate text-sm font-medium text-sidebar-foreground">{displayName}</p>}
+              <p className={cn("truncate text-sidebar-foreground", displayName ? "text-xs text-muted-foreground" : "text-sm")}>{user?.email}</p>
+            </div>
             <ThemeToggle />
             <Button variant="ghost" size="icon" onClick={signOut} className="shrink-0">
               <LogOut className="h-4 w-4" />

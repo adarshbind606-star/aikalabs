@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { SakuraPetals } from "@/components/SakuraPetals";
+import { AvatarEditor } from "@/components/AvatarEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -102,6 +103,20 @@ export default function Settings() {
     }
   };
 
+  const handleAvatarChange = async (url: string) => {
+    setAvatarUrl(url);
+    if (!user) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ avatar_url: url })
+      .eq("user_id", user.id);
+    if (error) {
+      toast.error("Failed to update avatar");
+    } else {
+      toast.success("Avatar updated!");
+    }
+  };
+
   const deleteAllChats = async () => {
     if (!user) return;
     const { error } = await supabase.from("conversations").delete().eq("user_id", user.id);
@@ -123,6 +138,8 @@ export default function Settings() {
   const handleFontSizeChange = (value: string) => {
     setFontSize(value);
     localStorage.setItem("aika-font-size", value);
+    // Dispatch storage event so ChatMessage picks it up in the same tab
+    window.dispatchEvent(new StorageEvent("storage", { key: "aika-font-size", newValue: value }));
     toast.success("Font size updated!");
   };
 
@@ -177,16 +194,8 @@ export default function Settings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="avatarUrl">Avatar URL</Label>
-                  <Input
-                    id="avatarUrl"
-                    value={avatarUrl}
-                    onChange={(e) => setAvatarUrl(e.target.value)}
-                    placeholder="https://example.com/avatar.png"
-                  />
-                  {avatarUrl && (
-                    <img src={avatarUrl} alt="Avatar preview" className="h-16 w-16 rounded-full border border-border object-cover" />
-                  )}
+                  <Label htmlFor="avatarUrl">Avatar</Label>
+                  <AvatarEditor avatarUrl={avatarUrl} onSave={handleAvatarChange} />
                 </div>
                 <Button onClick={saveProfile} disabled={profileLoading} size="sm">
                   {profileLoading ? "Saving..." : "Save Profile"}
