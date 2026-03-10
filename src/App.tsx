@@ -26,6 +26,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/chat" element={<Chat />} />
+              <Route path="/kawaii-code" element={<KawaiiCode />} />
               <Route path="/image-gen" element={<ImageGen />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/auth" element={<Auth />} />

@@ -59,7 +59,7 @@ export function ChatMessage({ role, content, imageUrl, messageId, onDelete }: Ch
         </div>
         <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleCopy}>
-            {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3 text-muted-foreground" />}
+            {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3 text-muted-foreground" />}
           </Button>
           {messageId && onDelete && (
             <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onDelete(messageId)}>

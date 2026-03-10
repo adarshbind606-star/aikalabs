@@ -97,7 +97,7 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <span className="ml-auto text-xs text-muted-foreground">2.1</span>
         </div>
 
-        <div className="flex gap-1 border-b border-sidebar-border p-2">
+        <div className="flex flex-wrap gap-1 border-b border-sidebar-border p-2">
           <Button
             onClick={() => { navigate("/chat"); onClose(); }}
             className="flex-1 gap-1 min-w-0 px-2"
@@ -106,6 +106,15 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           >
             <MessageSquare className="h-4 w-4 shrink-0" />
             <span className="truncate text-xs">Chat</span>
+          </Button>
+          <Button
+            onClick={() => { navigate("/kawaii-code"); onClose(); }}
+            className="flex-1 gap-1 min-w-0 px-2"
+            variant={activePage === "code" ? "default" : "outline"}
+            size="sm"
+          >
+            <Code2 className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs">Code</span>
           </Button>
           <Button
             onClick={() => { navigate("/image-gen"); onClose(); }}
