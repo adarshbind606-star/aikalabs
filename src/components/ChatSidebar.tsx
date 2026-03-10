@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
