@@ -25,7 +25,7 @@ interface ChatSidebarProps {
   onDelete: (id: string) => void;
   isOpen: boolean;
   onClose: () => void;
-  activePage?: "chat" | "image" | "settings";
+  activePage?: "chat" | "image" | "settings" | "code";
 }
 
 function groupByDate(conversations: Conversation[]) {
