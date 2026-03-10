@@ -1,17 +1,21 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { Cherry, User } from "lucide-react";
+import { Cherry, User, Trash2, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
   imageUrl?: string | null;
+  messageId?: string;
+  onDelete?: (id: string) => void;
 }
 
-export function ChatMessage({ role, content, imageUrl }: ChatMessageProps) {
+export function ChatMessage({ role, content, imageUrl, messageId, onDelete }: ChatMessageProps) {
   const isUser = role === "user";
   const [fontSize, setFontSize] = useState("medium");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("aika-font-size") || "medium";
@@ -24,26 +28,44 @@ export function ChatMessage({ role, content, imageUrl }: ChatMessageProps) {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className={cn("flex gap-3 px-4 py-4", `font-size-${fontSize}`, isUser ? "justify-end" : "justify-start")}>
+    <div className={cn("group flex gap-3 px-4 py-4", `font-size-${fontSize}`, isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
           <Cherry className="h-5 w-5 text-primary" />
         </div>
       )}
-      <div
-        className={cn(
-          "max-w-[75%] rounded-2xl px-4 py-3 chat-text",
-          isUser
-            ? "bg-primary text-primary-foreground rounded-br-md"
-            : "bg-card border border-border rounded-bl-md"
-        )}
-      >
-        {imageUrl && (
-          <img src={imageUrl} alt="Attached" className="mb-2 max-h-60 max-w-full rounded-lg object-cover" />
-        )}
-        <div className="markdown-content">
-          <ReactMarkdown>{content}</ReactMarkdown>
+      <div className="flex flex-col gap-1 max-w-[75%]">
+        <div
+          className={cn(
+            "rounded-2xl px-4 py-3 chat-text",
+            isUser
+              ? "bg-primary text-primary-foreground rounded-br-md"
+              : "bg-card border border-border rounded-bl-md"
+          )}
+        >
+          {imageUrl && (
+            <img src={imageUrl} alt="Attached" className="mb-2 max-h-60 max-w-full rounded-lg object-cover" />
+          )}
+          <div className="markdown-content">
+            <ReactMarkdown>{content}</ReactMarkdown>
+          </div>
+        </div>
+        <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleCopy}>
+            {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3 text-muted-foreground" />}
+          </Button>
+          {messageId && onDelete && (
+            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onDelete(messageId)}>
+              <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+            </Button>
+          )}
         </div>
       </div>
       {isUser && (

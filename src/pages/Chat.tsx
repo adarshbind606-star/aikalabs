@@ -8,9 +8,10 @@ import { ChatInput } from "@/components/ChatInput";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Menu, Cherry } from "lucide-react";
+import { Menu, Cherry, Download } from "lucide-react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import jsPDF from "jspdf";
 
 interface Msg {
   id?: string;
@@ -25,8 +26,6 @@ interface Conversation {
   created_at: string;
   updated_at: string;
 }
-
-
 
 export default function Chat() {
   const { session, user, loading } = useAuth();
@@ -68,7 +67,7 @@ export default function Chat() {
 
   const createConversation = async () => {
     if (!user) return;
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("conversations")
       .insert({ user_id: user.id, title: "New Conversation" })
       .select()
@@ -89,21 +88,54 @@ export default function Chat() {
     }
   };
 
+  const deleteMessage = async (msgId: string) => {
+    const { error } = await supabase.from("messages").delete().eq("id", msgId);
+    if (error) {
+      toast.error("Failed to delete message");
+      return;
+    }
+    setMessages(prev => prev.filter(m => m.id !== msgId));
+    toast.success("Message deleted");
+  };
+
   const saveMessage = async (convoId: string, msg: Msg) => {
     if (!user) return;
-    await supabase.from("messages").insert({
+    const { data } = await supabase.from("messages").insert({
       conversation_id: convoId,
       user_id: user.id,
       role: msg.role,
       content: msg.content,
       image_url: msg.image_url || null,
-    });
+    }).select().single();
+    return data?.id;
   };
 
   const updateConversationTitle = async (convoId: string, firstMessage: string) => {
     const title = firstMessage.slice(0, 50) + (firstMessage.length > 50 ? "..." : "");
     await supabase.from("conversations").update({ title }).eq("id", convoId);
     setConversations(prev => prev.map(c => c.id === convoId ? { ...c, title } : c));
+  };
+
+  const downloadPDF = () => {
+    if (messages.length === 0) return;
+    const doc = new jsPDF();
+    const convo = conversations.find(c => c.id === activeConvoId);
+    doc.setFontSize(16);
+    doc.text(convo?.title || "Conversation", 14, 20);
+    doc.setFontSize(10);
+    let y = 35;
+    for (const msg of messages) {
+      const label = msg.role === "user" ? "You" : "Aika";
+      const lines = doc.splitTextToSize(`${label}: ${msg.content}`, 180);
+      if (y + lines.length * 5 > 280) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(lines, 14, y);
+      y += lines.length * 5 + 5;
+    }
+    doc.save(`${convo?.title || "chat"}.pdf`);
+    toast.success("Chat downloaded as PDF");
   };
 
   const handleSend = useCallback(async (input: string, imageBase64?: string) => {
@@ -124,9 +156,11 @@ export default function Chat() {
 
     const userMsg: Msg = { role: "user", content: input, image_url: imageBase64 || null };
     setMessages(prev => [...prev, userMsg]);
-    await saveMessage(convoId!, userMsg);
+    const savedId = await saveMessage(convoId!, userMsg);
+    if (savedId) {
+      setMessages(prev => prev.map((m, i) => i === prev.length - 1 ? { ...m, id: savedId } : m));
+    }
 
-    // Update title if first message
     if (messages.length === 0) {
       await updateConversationTitle(convoId!, input);
     }
@@ -134,47 +168,47 @@ export default function Chat() {
     setIsStreaming(true);
     let assistantSoFar = "";
 
-      const chatHistory = [...messages, userMsg].map(m => {
-        if (m.image_url) {
-          return {
-            role: m.role as "user" | "assistant",
-            content: [
-              ...(m.content ? [{ type: "text" as const, text: m.content }] : []),
-              { type: "image_url" as const, image_url: { url: m.image_url } },
-            ],
-          };
-        }
+    const chatHistory = [...messages, userMsg].map(m => {
+      if (m.image_url) {
         return {
           role: m.role as "user" | "assistant",
-          content: m.content,
+          content: [
+            ...(m.content ? [{ type: "text" as const, text: m.content }] : []),
+            { type: "image_url" as const, image_url: { url: m.image_url } },
+          ],
         };
-      });
+      }
+      return { role: m.role as "user" | "assistant", content: m.content };
+    });
 
-      const upsertAssistant = (chunk: string) => {
-        assistantSoFar += chunk;
-        setMessages(prev => {
-          const last = prev[prev.length - 1];
-          if (last?.role === "assistant" && !last.id) {
-            return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantSoFar } : m);
-          }
-          return [...prev, { role: "assistant", content: assistantSoFar }];
-        });
-      };
-
-      await streamChat({
-        messages: chatHistory,
-        onDelta: upsertAssistant,
-        onDone: async () => {
-          setIsStreaming(false);
-          if (assistantSoFar) {
-            await saveMessage(convoId!, { role: "assistant", content: assistantSoFar });
-          }
-        },
-        onError: (err) => {
-          setIsStreaming(false);
-          toast.error(err);
-        },
+    const upsertAssistant = (chunk: string) => {
+      assistantSoFar += chunk;
+      setMessages(prev => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "assistant" && !last.id) {
+          return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantSoFar } : m);
+        }
+        return [...prev, { role: "assistant", content: assistantSoFar }];
       });
+    };
+
+    await streamChat({
+      messages: chatHistory,
+      onDelta: upsertAssistant,
+      onDone: async () => {
+        setIsStreaming(false);
+        if (assistantSoFar) {
+          const asstId = await saveMessage(convoId!, { role: "assistant", content: assistantSoFar });
+          if (asstId) {
+            setMessages(prev => prev.map((m, i) => i === prev.length - 1 ? { ...m, id: asstId } : m));
+          }
+        }
+      },
+      onError: (err) => {
+        setIsStreaming(false);
+        toast.error(err);
+      },
+    });
   }, [user, activeConvoId, messages, isStreaming]);
 
   if (loading) return null;
@@ -201,6 +235,11 @@ export default function Chat() {
           </Button>
           <Cherry className="h-5 w-5 text-primary" />
           <h2 className="font-display text-lg text-primary">Aika-AI 2.1</h2>
+          {activeConvoId && messages.length > 0 && (
+            <Button variant="ghost" size="icon" className="ml-auto" onClick={downloadPDF} title="Download as PDF">
+              <Download className="h-4 w-4" />
+            </Button>
+          )}
         </header>
 
         {!activeConvoId && messages.length === 0 ? (
@@ -218,10 +257,17 @@ export default function Chat() {
           </div>
         ) : (
           <>
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 custom-scrollbar">
               <div className="mx-auto max-w-3xl pb-4">
                 {messages.map((msg, i) => (
-                  <ChatMessage key={i} role={msg.role} content={msg.content} imageUrl={msg.image_url} />
+                  <ChatMessage
+                    key={msg.id || i}
+                    role={msg.role}
+                    content={msg.content}
+                    imageUrl={msg.image_url}
+                    messageId={msg.id}
+                    onDelete={deleteMessage}
+                  />
                 ))}
                 {isStreaming && messages[messages.length - 1]?.role !== "assistant" && <ThinkingIndicator />}
                 <div ref={scrollRef} />
