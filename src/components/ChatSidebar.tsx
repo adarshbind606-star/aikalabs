@@ -187,6 +187,14 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </div>
         )}
 
+        {activePage === "code" && (
+          <div className="flex flex-1 items-center justify-center p-4">
+            <p className="text-center text-sm text-muted-foreground">
+              Your AI coding assistant — write, debug & explain code 💻
+            </p>
+          </div>
+        )}
+
         {activePage === "settings" && (
           <div className="flex flex-1 items-center justify-center p-4">
             <p className="text-center text-sm text-muted-foreground">
