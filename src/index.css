@@ -150,3 +150,27 @@
 .font-size-small .chat-text { font-size: 0.8125rem; line-height: 1.4; }
 .font-size-medium .chat-text { font-size: 0.875rem; line-height: 1.5; }
 .font-size-large .chat-text { font-size: 1rem; line-height: 1.6; }
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.4);
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.6);
+}
+
+/* KawaiiCode syntax */
+.kawaii-code .markdown-content pre {
+  @apply relative;
+}
+.kawaii-code .markdown-content pre code {
+  @apply text-xs;
+}

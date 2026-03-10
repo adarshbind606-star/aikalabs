@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -25,7 +25,7 @@ interface ChatSidebarProps {
   onDelete: (id: string) => void;
   isOpen: boolean;
   onClose: () => void;
-  activePage?: "chat" | "image" | "settings";
+  activePage?: "chat" | "image" | "settings" | "code";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -97,7 +97,7 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <span className="ml-auto text-xs text-muted-foreground">2.1</span>
         </div>
 
-        <div className="flex gap-1 border-b border-sidebar-border p-2">
+        <div className="flex flex-wrap gap-1 border-b border-sidebar-border p-2">
           <Button
             onClick={() => { navigate("/chat"); onClose(); }}
             className="flex-1 gap-1 min-w-0 px-2"
@@ -106,6 +106,15 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           >
             <MessageSquare className="h-4 w-4 shrink-0" />
             <span className="truncate text-xs">Chat</span>
+          </Button>
+          <Button
+            onClick={() => { navigate("/kawaii-code"); onClose(); }}
+            className="flex-1 gap-1 min-w-0 px-2"
+            variant={activePage === "code" ? "default" : "outline"}
+            size="sm"
+          >
+            <Code2 className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs">Code</span>
           </Button>
           <Button
             onClick={() => { navigate("/image-gen"); onClose(); }}
@@ -174,6 +183,14 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <div className="flex flex-1 items-center justify-center p-4">
             <p className="text-center text-sm text-muted-foreground">
               Create images by describing what you want below ✨
+            </p>
+          </div>
+        )}
+
+        {activePage === "code" && (
+          <div className="flex flex-1 items-center justify-center p-4">
+            <p className="text-center text-sm text-muted-foreground">
+              Your AI coding assistant — write, debug & explain code 💻
             </p>
           </div>
         )}

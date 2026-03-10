@@ -1,39 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { generateImage } from "@/lib/chat-stream";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Menu, Cherry, Send, ImagePlus, Download } from "lucide-react";
+import { Menu, Cherry, Send, ImagePlus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface GeneratedImage {
+  id?: string;
   prompt: string;
   url: string;
 }
 
 export default function ImageGen() {
-  const { session, loading } = useAuth();
+  const { session, user, loading } = useAuth();
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [images, setImages] = useState<GeneratedImage[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    if (user) loadImages();
+  }, [user]);
+
+  const loadImages = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("image_generations")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (data) setImages(data.map(d => ({ id: d.id, prompt: d.prompt, url: d.image_url })));
+  };
+
   const handleGenerate = async () => {
-    if (!prompt.trim() || isGenerating) return;
+    if (!prompt.trim() || isGenerating || !user) return;
     const currentPrompt = prompt.trim();
     setPrompt("");
     setIsGenerating(true);
     try {
       const imageUrl = await generateImage(currentPrompt);
-      setImages(prev => [{ prompt: currentPrompt, url: imageUrl }, ...prev]);
+      const { data } = await supabase
+        .from("image_generations")
+        .insert({ user_id: user.id, prompt: currentPrompt, image_url: imageUrl })
+        .select()
+        .single();
+      setImages(prev => [{ id: data?.id, prompt: currentPrompt, url: imageUrl }, ...prev]);
     } catch (err: any) {
       toast.error(err.message || "Failed to generate image");
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const deleteImage = async (id: string) => {
+    await supabase.from("image_generations").delete().eq("id", id);
+    setImages(prev => prev.filter(img => img.id !== id));
+    toast.success("Image deleted");
   };
 
   if (loading) return null;
@@ -73,7 +99,7 @@ export default function ImageGen() {
             </p>
           </div>
         ) : (
-          <ScrollArea className="flex-1">
+          <ScrollArea className="flex-1 custom-scrollbar">
             <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 p-6 sm:grid-cols-2">
               {isGenerating && (
                 <div className="flex aspect-square items-center justify-center rounded-2xl border border-border bg-card">
@@ -83,11 +109,16 @@ export default function ImageGen() {
                   </div>
                 </div>
               )}
-              {images.map((img, i) => (
-                <div key={i} className="group relative overflow-hidden rounded-2xl border border-border bg-card">
+              {images.map((img) => (
+                <div key={img.id || img.url} className="group relative overflow-hidden rounded-2xl border border-border bg-card">
                   <img src={img.url} alt={img.prompt} className="aspect-square w-full object-cover" />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 transition-opacity group-hover:opacity-100">
-                    <p className="text-sm text-white">{img.prompt}</p>
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 transition-opacity group-hover:opacity-100">
+                    <p className="text-sm text-white flex-1">{img.prompt}</p>
+                    {img.id && (
+                      <Button variant="ghost" size="icon" className="shrink-0 text-white hover:text-destructive" onClick={() => deleteImage(img.id!)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))}
