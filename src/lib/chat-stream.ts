@@ -3,6 +3,12 @@ type Msg = { role: "user" | "assistant"; content: MsgContent };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
+async function getAccessToken(): Promise<string> {
+  const { supabase } = await import("@/integrations/supabase/client");
+  const { data: { session } } = await supabase.auth.getSession();
+  return session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+}
+
 export async function streamChat({
   messages,
   onDelta,
@@ -14,11 +20,12 @@ export async function streamChat({
   onDone: () => void;
   onError: (error: string) => void;
 }) {
+  const token = await getAccessToken();
   const resp = await fetch(CHAT_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ messages }),
   });
@@ -29,6 +36,10 @@ export async function streamChat({
   }
   if (resp.status === 402) {
     onError("AI usage limit reached. Please add credits.");
+    return;
+  }
+  if (resp.status === 401) {
+    onError("Please log in to continue.");
     return;
   }
   if (!resp.ok || !resp.body) {
@@ -97,11 +108,12 @@ export async function streamChat({
 const IMAGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-image`;
 
 export async function generateImage(prompt: string): Promise<string> {
+  const token = await getAccessToken();
   const resp = await fetch(IMAGE_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ prompt }),
   });
