@@ -97,10 +97,10 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <span className="ml-auto text-xs text-muted-foreground">2.1</span>
         </div>
 
-        <div className="flex flex-wrap gap-1 border-b border-sidebar-border p-2">
+        <div className="grid grid-cols-3 gap-1 border-b border-sidebar-border p-2">
           <Button
             onClick={() => { navigate("/chat"); onClose(); }}
-            className="flex-1 gap-1 min-w-0 px-2"
+            className="gap-1.5 px-2"
             variant={activePage === "chat" ? "default" : "outline"}
             size="sm"
           >
@@ -108,17 +108,8 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
             <span className="truncate text-xs">Chat</span>
           </Button>
           <Button
-            onClick={() => { navigate("/kawaii-code"); onClose(); }}
-            className="flex-1 gap-1 min-w-0 px-2"
-            variant={activePage === "code" ? "default" : "outline"}
-            size="sm"
-          >
-            <Code2 className="h-4 w-4 shrink-0" />
-            <span className="truncate text-xs">Code</span>
-          </Button>
-          <Button
             onClick={() => { navigate("/image-gen"); onClose(); }}
-            className="flex-1 gap-1 min-w-0 px-2"
+            className="gap-1.5 px-2"
             variant={activePage === "image" ? "default" : "outline"}
             size="sm"
           >
@@ -127,12 +118,23 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </Button>
           <Button
             onClick={() => { navigate("/settings"); onClose(); }}
-            className="flex-1 gap-1 min-w-0 px-2"
+            className="gap-1.5 px-2"
             variant={activePage === "settings" ? "default" : "outline"}
             size="sm"
           >
             <Settings className="h-4 w-4 shrink-0" />
             <span className="truncate text-xs">Settings</span>
+          </Button>
+        </div>
+        <div className="border-b border-sidebar-border px-2 pb-2">
+          <Button
+            onClick={() => { navigate("/kawaii-code"); onClose(); }}
+            className="w-full gap-2"
+            variant={activePage === "code" ? "default" : "outline"}
+            size="sm"
+          >
+            <Code2 className="h-4 w-4 shrink-0" />
+            <span className="text-xs">KawaiiCode</span>
           </Button>
         </div>
 
