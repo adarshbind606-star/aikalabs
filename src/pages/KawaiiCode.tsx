@@ -13,8 +13,16 @@ import { toast } from "sonner";
 const CODE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/kawaii-code`;
 
 interface Msg {
+  id?: string;
   role: "user" | "assistant";
   content: string;
+}
+
+interface Conversation {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const QUICK_ACTIONS = [
@@ -28,6 +36,8 @@ const QUICK_ACTIONS = [
 
 export default function KawaiiCode() {
   const { session, user, loading } = useAuth();
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -36,10 +46,17 @@ export default function KawaiiCode() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    if (user) loadConversations();
+  }, [user]);
+
+  useEffect(() => {
+    if (activeConvoId) loadMessages(activeConvoId);
+  }, [activeConvoId]);
+
+  useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Auto-resize textarea
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
@@ -47,15 +64,95 @@ export default function KawaiiCode() {
     el.style.height = Math.min(el.scrollHeight, 200) + "px";
   }, [input]);
 
+  const loadConversations = async () => {
+    // Reuse the conversations table, filtering by a title prefix for KawaiiCode
+    const { data } = await supabase
+      .from("conversations")
+      .select("*")
+      .like("title", "KC:%")
+      .order("updated_at", { ascending: false });
+    if (data) setConversations(data);
+  };
+
+  const loadMessages = async (convoId: string) => {
+    const { data } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("conversation_id", convoId)
+      .order("created_at", { ascending: true });
+    if (data) setMessages(data.map(m => ({ id: m.id, role: m.role as "user" | "assistant", content: m.content })));
+  };
+
+  const saveMessage = async (convoId: string, msg: Msg) => {
+    if (!user) return;
+    const { data } = await supabase.from("messages").insert({
+      conversation_id: convoId,
+      user_id: user.id,
+      role: msg.role,
+      content: msg.content,
+    }).select().single();
+    return data?.id;
+  };
+
+  const updateConversationTitle = async (convoId: string, firstMessage: string) => {
+    const title = "KC:" + firstMessage.slice(0, 47) + (firstMessage.length > 47 ? "..." : "");
+    await supabase.from("conversations").update({ title }).eq("id", convoId);
+    setConversations(prev => prev.map(c => c.id === convoId ? { ...c, title } : c));
+  };
+
+  const createNewSession = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("conversations")
+      .insert({ user_id: user.id, title: "KC:New Session" })
+      .select()
+      .single();
+    if (data) {
+      setConversations(prev => [data, ...prev]);
+      setActiveConvoId(data.id);
+      setMessages([]);
+    }
+  };
+
+  const deleteConversation = async (id: string) => {
+    await supabase.from("conversations").delete().eq("id", id);
+    setConversations(prev => prev.filter(c => c.id !== id));
+    if (activeConvoId === id) {
+      setActiveConvoId(null);
+      setMessages([]);
+    }
+  };
+
   const handleSend = useCallback(async () => {
     const text = input.trim();
     if (!text || isStreaming || !user) return;
     setInput("");
 
+    let convoId = activeConvoId;
+    if (!convoId) {
+      const { data } = await supabase
+        .from("conversations")
+        .insert({ user_id: user.id, title: "KC:New Session" })
+        .select()
+        .single();
+      if (!data) return;
+      convoId = data.id;
+      setConversations(prev => [data, ...prev]);
+      setActiveConvoId(convoId);
+    }
+
     const userMsg: Msg = { role: "user", content: text };
     setMessages(prev => [...prev, userMsg]);
-    setIsStreaming(true);
+    const savedUserId = await saveMessage(convoId!, userMsg);
+    if (savedUserId) {
+      setMessages(prev => prev.map((m, i) => i === prev.length - 1 ? { ...m, id: savedUserId } : m));
+    }
 
+    if (messages.length === 0) {
+      await updateConversationTitle(convoId!, text);
+    }
+
+    setIsStreaming(true);
     let assistantSoFar = "";
 
     try {
@@ -102,7 +199,7 @@ export default function KawaiiCode() {
               assistantSoFar += content;
               setMessages(prev => {
                 const last = prev[prev.length - 1];
-                if (last?.role === "assistant") {
+                if (last?.role === "assistant" && !last.id) {
                   return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantSoFar } : m);
                 }
                 return [...prev, { role: "assistant", content: assistantSoFar }];
@@ -114,12 +211,20 @@ export default function KawaiiCode() {
           }
         }
       }
+
+      // Save assistant message
+      if (assistantSoFar) {
+        const asstId = await saveMessage(convoId!, { role: "assistant", content: assistantSoFar });
+        if (asstId) {
+          setMessages(prev => prev.map((m, i) => i === prev.length - 1 ? { ...m, id: asstId } : m));
+        }
+      }
     } catch {
       toast.error("Connection error");
     }
 
     setIsStreaming(false);
-  }, [input, messages, isStreaming, user]);
+  }, [input, messages, isStreaming, user, activeConvoId]);
 
   if (loading) return null;
   if (!session) return <Navigate to="/" replace />;
@@ -128,11 +233,11 @@ export default function KawaiiCode() {
     <div className="relative flex h-screen overflow-hidden bg-background">
       <SakuraPetals count={3} />
       <ChatSidebar
-        conversations={[]}
-        activeId={null}
-        onSelect={() => {}}
-        onNew={() => {}}
-        onDelete={() => {}}
+        conversations={conversations}
+        activeId={activeConvoId}
+        onSelect={setActiveConvoId}
+        onNew={createNewSession}
+        onDelete={deleteConversation}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         activePage="code"
@@ -145,23 +250,21 @@ export default function KawaiiCode() {
           </Button>
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-              <Code2 className="h-4.5 w-4.5 text-primary" />
+              <Code2 className="h-4 w-4 text-primary" />
             </div>
             <div>
               <h2 className="font-display text-base font-semibold text-foreground leading-tight">KawaiiCode</h2>
               <p className="text-[10px] text-muted-foreground leading-tight">Powered by kimono-zm • Codex-class agent</p>
             </div>
           </div>
-          {messages.length > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto text-xs"
-              onClick={() => setMessages([])}
-            >
-              New Session
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto text-xs"
+            onClick={() => { setActiveConvoId(null); setMessages([]); }}
+          >
+            New Session
+          </Button>
         </header>
 
         {messages.length === 0 ? (
@@ -192,7 +295,7 @@ export default function KawaiiCode() {
           <ScrollArea className="flex-1 custom-scrollbar">
             <div className="mx-auto max-w-4xl pb-4">
               {messages.map((msg, i) => (
-                <KawaiiCodeMessage key={i} role={msg.role} content={msg.content} />
+                <KawaiiCodeMessage key={msg.id || i} role={msg.role} content={msg.content} />
               ))}
               {isStreaming && messages[messages.length - 1]?.role !== "assistant" && <KawaiiThinkingIndicator />}
               <div ref={scrollRef} />

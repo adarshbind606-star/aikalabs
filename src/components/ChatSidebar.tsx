@@ -190,11 +190,46 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
         )}
 
         {activePage === "code" && (
-          <div className="flex flex-1 items-center justify-center p-4">
-            <p className="text-center text-sm text-muted-foreground">
-              Your AI coding assistant — write, debug & explain code 💻
-            </p>
-          </div>
+          <>
+            <div className="p-3">
+              <Button onClick={onNew} className="w-full gap-2" variant="outline">
+                <Plus className="h-4 w-4" /> New Session
+              </Button>
+            </div>
+
+            <ScrollArea className="flex-1 px-2">
+              {groups.map((group) => (
+                <div key={group.label} className="mb-3">
+                  <p className="mb-1 px-3 text-xs font-medium uppercase text-muted-foreground">{group.label}</p>
+                  {group.items.map((c) => (
+                    <div
+                      key={c.id}
+                      className={cn(
+                        "group flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-sidebar-accent",
+                        activeId === c.id && "bg-sidebar-accent text-sidebar-accent-foreground"
+                      )}
+                      onClick={() => {
+                        onSelect(c.id);
+                        onClose();
+                      }}
+                    >
+                      <Code2 className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="flex-1 truncate">{c.title.replace(/^KC:/, "")}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(c.id);
+                        }}
+                        className="hidden shrink-0 text-muted-foreground hover:text-destructive group-hover:block"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </ScrollArea>
+          </>
         )}
 
         {activePage === "settings" && (
