@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Code2, User, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
