@@ -252,10 +252,7 @@ export default function KawaiiCode() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
               <Code2 className="h-4 w-4 text-primary" />
             </div>
-            <div>
-              <h2 className="font-display text-base font-semibold text-foreground leading-tight">KawaiiCode</h2>
-              <p className="text-[10px] text-muted-foreground leading-tight">Powered by kimono-zm • Codex-class agent</p>
-            </div>
+            <h2 className="font-display text-base font-semibold text-foreground leading-tight">KawaiiCode</h2>
           </div>
           <Button
             variant="outline"
@@ -269,24 +266,24 @@ export default function KawaiiCode() {
 
         {messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-6 p-8">
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
-              <Code2 className="h-10 w-10 text-primary" />
+            <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
+              <Code2 className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
             </div>
-            <div className="text-center">
-              <h2 className="font-display text-2xl font-semibold text-foreground">KawaiiCode ✨</h2>
-              <p className="mt-1.5 max-w-lg text-sm text-muted-foreground">
-                Your Codex-class coding agent. I build full projects, debug issues, write tests, design APIs, and review code — all with production quality 🌸
+            <div className="text-center px-4">
+              <h2 className="font-display text-xl sm:text-2xl font-semibold text-foreground">KawaiiCode</h2>
+              <p className="mt-1 max-w-md text-xs sm:text-sm text-muted-foreground">
+                What do you want to build?
               </p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-w-2xl w-full">
+            <div className="grid grid-cols-2 gap-2 max-w-2xl w-full px-2">
               {QUICK_ACTIONS.map(({ icon: Icon, label, prompt }) => (
                 <button
                   key={label}
                   onClick={() => { setInput(prompt); textareaRef.current?.focus(); }}
-                  className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-3.5 py-3 text-left text-sm transition-colors hover:bg-accent hover:border-primary/30 group"
+                  className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-left text-xs sm:text-sm transition-colors hover:bg-accent hover:border-primary/30 group"
                 >
                   <Icon className="h-4 w-4 text-muted-foreground group-hover:text-primary shrink-0 transition-colors" />
-                  <span className="text-foreground font-medium">{label}</span>
+                  <span className="text-foreground font-medium truncate">{label}</span>
                 </button>
               ))}
             </div>
@@ -303,14 +300,14 @@ export default function KawaiiCode() {
           </ScrollArea>
         )}
 
-        <div className="border-t border-border bg-background/80 backdrop-blur-sm p-4">
-          <div className="mx-auto flex max-w-4xl items-end gap-2 rounded-2xl border border-input bg-card p-2 shadow-sm focus-within:border-primary/40 transition-colors">
+        <div className="border-t border-border bg-background/80 backdrop-blur-sm p-2 sm:p-4">
+          <div className="mx-auto flex max-w-4xl items-end gap-2 rounded-2xl border border-input bg-card p-1.5 sm:p-2 shadow-sm focus-within:border-primary/40 transition-colors">
             <textarea
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-              placeholder="Describe what you want to build, fix, or understand..."
+              placeholder="Describe what you want to build..."
               rows={1}
               disabled={isStreaming}
               className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
@@ -320,8 +317,8 @@ export default function KawaiiCode() {
               <Send className="h-4 w-4" />
             </Button>
           </div>
-          <p className="mt-1.5 text-center text-[10px] text-muted-foreground">
-            KawaiiCode can make mistakes. Always review generated code before using in production.
+          <p className="mt-1 text-center text-[10px] text-muted-foreground">
+            KawaiiCode can make mistakes. Review code before production use.
           </p>
         </div>
       </div>

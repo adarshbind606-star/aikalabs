@@ -52,6 +52,7 @@ export default function Chat() {
     const { data } = await supabase
       .from("conversations")
       .select("*")
+      .not("title", "like", "KC:%")
       .order("updated_at", { ascending: false });
     if (data) setConversations(data);
   };
