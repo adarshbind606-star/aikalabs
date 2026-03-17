@@ -252,10 +252,7 @@ export default function KawaiiCode() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
               <Code2 className="h-4 w-4 text-primary" />
             </div>
-            <div>
-              <h2 className="font-display text-base font-semibold text-foreground leading-tight">KawaiiCode</h2>
-              <p className="text-[10px] text-muted-foreground leading-tight">Powered by kimono-zm • Codex-class agent</p>
-            </div>
+            <h2 className="font-display text-base font-semibold text-foreground leading-tight">KawaiiCode</h2>
           </div>
           <Button
             variant="outline"
