@@ -266,13 +266,13 @@ export default function KawaiiCode() {
 
         {messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-6 p-8">
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
-              <Code2 className="h-10 w-10 text-primary" />
+            <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
+              <Code2 className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
             </div>
-            <div className="text-center">
-              <h2 className="font-display text-2xl font-semibold text-foreground">KawaiiCode ✨</h2>
-              <p className="mt-1.5 max-w-lg text-sm text-muted-foreground">
-                Your Codex-class coding agent. I build full projects, debug issues, write tests, design APIs, and review code — all with production quality 🌸
+            <div className="text-center px-4">
+              <h2 className="font-display text-xl sm:text-2xl font-semibold text-foreground">KawaiiCode</h2>
+              <p className="mt-1 max-w-md text-xs sm:text-sm text-muted-foreground">
+                What do you want to build?
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2 max-w-2xl w-full px-2">
