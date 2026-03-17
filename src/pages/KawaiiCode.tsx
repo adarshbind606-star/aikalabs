@@ -275,15 +275,15 @@ export default function KawaiiCode() {
                 Your Codex-class coding agent. I build full projects, debug issues, write tests, design APIs, and review code — all with production quality 🌸
               </p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-w-2xl w-full">
+            <div className="grid grid-cols-2 gap-2 max-w-2xl w-full px-2">
               {QUICK_ACTIONS.map(({ icon: Icon, label, prompt }) => (
                 <button
                   key={label}
                   onClick={() => { setInput(prompt); textareaRef.current?.focus(); }}
-                  className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-3.5 py-3 text-left text-sm transition-colors hover:bg-accent hover:border-primary/30 group"
+                  className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-left text-xs sm:text-sm transition-colors hover:bg-accent hover:border-primary/30 group"
                 >
                   <Icon className="h-4 w-4 text-muted-foreground group-hover:text-primary shrink-0 transition-colors" />
-                  <span className="text-foreground font-medium">{label}</span>
+                  <span className="text-foreground font-medium truncate">{label}</span>
                 </button>
               ))}
             </div>
