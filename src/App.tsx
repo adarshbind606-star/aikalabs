@@ -8,7 +8,6 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Chat from "./pages/Chat";
 import ImageGen from "./pages/ImageGen";
 import Settings from "./pages/Settings";
-import KawaiiCode from "./pages/KawaiiCode";
 import Auth from "./pages/Auth";
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
@@ -26,7 +25,6 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/chat" element={<Chat />} />
-              <Route path="/kawaii-code" element={<KawaiiCode />} />
               <Route path="/image-gen" element={<ImageGen />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/auth" element={<Auth />} />

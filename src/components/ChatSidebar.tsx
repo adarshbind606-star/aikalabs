@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Code2 } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -25,7 +25,7 @@ interface ChatSidebarProps {
   onDelete: (id: string) => void;
   isOpen: boolean;
   onClose: () => void;
-  activePage?: "chat" | "image" | "settings" | "code";
+  activePage?: "chat" | "image" | "settings";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -97,10 +97,10 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <span className="ml-auto text-xs text-muted-foreground">2.1</span>
         </div>
 
-        <div className="grid grid-cols-3 gap-1 border-b border-sidebar-border p-2">
+        <div className="flex gap-1 border-b border-sidebar-border p-2">
           <Button
             onClick={() => { navigate("/chat"); onClose(); }}
-            className="gap-1.5 px-2"
+            className="flex-1 gap-1 min-w-0 px-2"
             variant={activePage === "chat" ? "default" : "outline"}
             size="sm"
           >
@@ -109,7 +109,7 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </Button>
           <Button
             onClick={() => { navigate("/image-gen"); onClose(); }}
-            className="gap-1.5 px-2"
+            className="flex-1 gap-1 min-w-0 px-2"
             variant={activePage === "image" ? "default" : "outline"}
             size="sm"
           >
@@ -118,23 +118,12 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </Button>
           <Button
             onClick={() => { navigate("/settings"); onClose(); }}
-            className="gap-1.5 px-2"
+            className="flex-1 gap-1 min-w-0 px-2"
             variant={activePage === "settings" ? "default" : "outline"}
             size="sm"
           >
             <Settings className="h-4 w-4 shrink-0" />
             <span className="truncate text-xs">Settings</span>
-          </Button>
-        </div>
-        <div className="border-b border-sidebar-border px-2 pb-2">
-          <Button
-            onClick={() => { navigate("/kawaii-code"); onClose(); }}
-            className="w-full gap-2"
-            variant={activePage === "code" ? "default" : "outline"}
-            size="sm"
-          >
-            <Code2 className="h-4 w-4 shrink-0" />
-            <span className="text-xs">KawaiiCode</span>
           </Button>
         </div>
 
@@ -187,49 +176,6 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
               Create images by describing what you want below ✨
             </p>
           </div>
-        )}
-
-        {activePage === "code" && (
-          <>
-            <div className="p-3">
-              <Button onClick={onNew} className="w-full gap-2" variant="outline">
-                <Plus className="h-4 w-4" /> New Session
-              </Button>
-            </div>
-
-            <ScrollArea className="flex-1 px-2">
-              {groups.map((group) => (
-                <div key={group.label} className="mb-3">
-                  <p className="mb-1 px-3 text-xs font-medium uppercase text-muted-foreground">{group.label}</p>
-                  {group.items.map((c) => (
-                    <div
-                      key={c.id}
-                      className={cn(
-                        "group flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-sidebar-accent",
-                        activeId === c.id && "bg-sidebar-accent text-sidebar-accent-foreground"
-                      )}
-                      onClick={() => {
-                        onSelect(c.id);
-                        onClose();
-                      }}
-                    >
-                      <Code2 className="h-4 w-4 shrink-0 text-muted-foreground" />
-                      <span className="flex-1 truncate">{c.title.replace(/^KC:/, "")}</span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDelete(c.id);
-                        }}
-                        className="hidden shrink-0 text-muted-foreground hover:text-destructive group-hover:block"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </ScrollArea>
-          </>
         )}
 
         {activePage === "settings" && (
