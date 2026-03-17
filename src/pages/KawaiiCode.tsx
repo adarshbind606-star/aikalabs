@@ -300,14 +300,14 @@ export default function KawaiiCode() {
           </ScrollArea>
         )}
 
-        <div className="border-t border-border bg-background/80 backdrop-blur-sm p-4">
-          <div className="mx-auto flex max-w-4xl items-end gap-2 rounded-2xl border border-input bg-card p-2 shadow-sm focus-within:border-primary/40 transition-colors">
+        <div className="border-t border-border bg-background/80 backdrop-blur-sm p-2 sm:p-4">
+          <div className="mx-auto flex max-w-4xl items-end gap-2 rounded-2xl border border-input bg-card p-1.5 sm:p-2 shadow-sm focus-within:border-primary/40 transition-colors">
             <textarea
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-              placeholder="Describe what you want to build, fix, or understand..."
+              placeholder="Describe what you want to build..."
               rows={1}
               disabled={isStreaming}
               className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
@@ -317,8 +317,8 @@ export default function KawaiiCode() {
               <Send className="h-4 w-4" />
             </Button>
           </div>
-          <p className="mt-1.5 text-center text-[10px] text-muted-foreground">
-            KawaiiCode can make mistakes. Always review generated code before using in production.
+          <p className="mt-1 text-center text-[10px] text-muted-foreground">
+            KawaiiCode can make mistakes. Review code before production use.
           </p>
         </div>
       </div>
