@@ -8,9 +8,15 @@ import { ChatInput } from "@/components/ChatInput";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Menu, Cherry } from "lucide-react";
+import { Menu, Cherry, Share2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Msg {
   id?: string;
@@ -25,8 +31,6 @@ interface Conversation {
   created_at: string;
   updated_at: string;
 }
-
-
 
 export default function Chat() {
   const { session, user, loading } = useAuth();
@@ -68,7 +72,7 @@ export default function Chat() {
 
   const createConversation = async () => {
     if (!user) return;
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("conversations")
       .insert({ user_id: user.id, title: "New Conversation" })
       .select()
@@ -91,13 +95,14 @@ export default function Chat() {
 
   const saveMessage = async (convoId: string, msg: Msg) => {
     if (!user) return;
-    await supabase.from("messages").insert({
+    const { data } = await supabase.from("messages").insert({
       conversation_id: convoId,
       user_id: user.id,
       role: msg.role,
       content: msg.content,
       image_url: msg.image_url || null,
-    });
+    }).select().single();
+    return data;
   };
 
   const updateConversationTitle = async (convoId: string, firstMessage: string) => {
@@ -105,6 +110,50 @@ export default function Chat() {
     await supabase.from("conversations").update({ title }).eq("id", convoId);
     setConversations(prev => prev.map(c => c.id === convoId ? { ...c, title } : c));
   };
+
+  const streamResponse = useCallback(async (convoId: string, chatMessages: Msg[]) => {
+    setIsStreaming(true);
+    let assistantSoFar = "";
+
+    const chatHistory = chatMessages.map(m => {
+      if (m.image_url) {
+        return {
+          role: m.role as "user" | "assistant",
+          content: [
+            ...(m.content ? [{ type: "text" as const, text: m.content }] : []),
+            { type: "image_url" as const, image_url: { url: m.image_url } },
+          ],
+        };
+      }
+      return { role: m.role as "user" | "assistant", content: m.content };
+    });
+
+    const upsertAssistant = (chunk: string) => {
+      assistantSoFar += chunk;
+      setMessages(prev => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "assistant" && !last.id) {
+          return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantSoFar } : m);
+        }
+        return [...prev, { role: "assistant", content: assistantSoFar }];
+      });
+    };
+
+    await streamChat({
+      messages: chatHistory,
+      onDelta: upsertAssistant,
+      onDone: async () => {
+        setIsStreaming(false);
+        if (assistantSoFar) {
+          await saveMessage(convoId, { role: "assistant", content: assistantSoFar });
+        }
+      },
+      onError: (err) => {
+        setIsStreaming(false);
+        toast.error(err);
+      },
+    });
+  }, [user]);
 
   const handleSend = useCallback(async (input: string, imageBase64?: string) => {
     if (!user || isStreaming) return;
@@ -123,59 +172,67 @@ export default function Chat() {
     }
 
     const userMsg: Msg = { role: "user", content: input, image_url: imageBase64 || null };
-    setMessages(prev => [...prev, userMsg]);
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
     await saveMessage(convoId!, userMsg);
 
-    // Update title if first message
     if (messages.length === 0) {
       await updateConversationTitle(convoId!, input);
     }
 
-    setIsStreaming(true);
-    let assistantSoFar = "";
+    await streamResponse(convoId!, newMessages);
+  }, [user, activeConvoId, messages, isStreaming, streamResponse]);
 
-      const chatHistory = [...messages, userMsg].map(m => {
-        if (m.image_url) {
-          return {
-            role: m.role as "user" | "assistant",
-            content: [
-              ...(m.content ? [{ type: "text" as const, text: m.content }] : []),
-              { type: "image_url" as const, image_url: { url: m.image_url } },
-            ],
-          };
-        }
-        return {
-          role: m.role as "user" | "assistant",
-          content: m.content,
-        };
-      });
+  const handleEditMessage = useCallback(async (index: number, newContent: string) => {
+    if (!activeConvoId || !user || isStreaming) return;
 
-      const upsertAssistant = (chunk: string) => {
-        assistantSoFar += chunk;
-        setMessages(prev => {
-          const last = prev[prev.length - 1];
-          if (last?.role === "assistant" && !last.id) {
-            return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantSoFar } : m);
-          }
-          return [...prev, { role: "assistant", content: assistantSoFar }];
-        });
-      };
+    // Delete all messages from this index onward in DB
+    const msgsToDelete = messages.slice(index).filter(m => m.id);
+    for (const msg of msgsToDelete) {
+      if (msg.id) await supabase.from("messages").delete().eq("id", msg.id);
+    }
 
-      await streamChat({
-        messages: chatHistory,
-        onDelta: upsertAssistant,
-        onDone: async () => {
-          setIsStreaming(false);
-          if (assistantSoFar) {
-            await saveMessage(convoId!, { role: "assistant", content: assistantSoFar });
-          }
-        },
-        onError: (err) => {
-          setIsStreaming(false);
-          toast.error(err);
-        },
-      });
-  }, [user, activeConvoId, messages, isStreaming]);
+    // Update local messages: keep up to index, replace with edited
+    const edited: Msg = { role: "user", content: newContent, image_url: messages[index].image_url };
+    const newMessages = [...messages.slice(0, index), edited];
+    setMessages(newMessages);
+    await saveMessage(activeConvoId, edited);
+    await streamResponse(activeConvoId, newMessages);
+  }, [activeConvoId, user, messages, isStreaming, streamResponse]);
+
+  const handleResendMessage = useCallback(async (index: number) => {
+    if (!activeConvoId || !user || isStreaming) return;
+
+    // Delete all messages after this one in DB
+    const msgsToDelete = messages.slice(index + 1).filter(m => m.id);
+    for (const msg of msgsToDelete) {
+      if (msg.id) await supabase.from("messages").delete().eq("id", msg.id);
+    }
+
+    const newMessages = messages.slice(0, index + 1);
+    setMessages(newMessages);
+    await streamResponse(activeConvoId, newMessages);
+  }, [activeConvoId, user, messages, isStreaming, streamResponse]);
+
+  const handleShareChat = () => {
+    if (messages.length === 0) return;
+    const text = messages.map(m => `${m.role === "user" ? "You" : "Aika"}: ${m.content}`).join("\n\n");
+    navigator.clipboard.writeText(text);
+    toast.success("Chat copied to clipboard! 🌸");
+  };
+
+  const handleDownloadChat = () => {
+    if (messages.length === 0) return;
+    const text = messages.map(m => `${m.role === "user" ? "You" : "Aika"}: ${m.content}`).join("\n\n");
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `aika-chat-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Chat downloaded! 🌸");
+  };
 
   if (loading) return null;
   if (!session) return <Navigate to="/" replace />;
@@ -201,6 +258,25 @@ export default function Chat() {
           </Button>
           <Cherry className="h-5 w-5 text-primary" />
           <h2 className="font-display text-lg text-primary">Aika-AI 2.1</h2>
+          <div className="ml-auto">
+            {activeConvoId && messages.length > 0 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleShareChat}>
+                    <Share2 className="h-4 w-4 mr-2" /> Copy to clipboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDownloadChat}>
+                    <Download className="h-4 w-4 mr-2" /> Download as text
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </header>
 
         {!activeConvoId && messages.length === 0 ? (
@@ -221,7 +297,14 @@ export default function Chat() {
             <ScrollArea className="flex-1">
               <div className="mx-auto max-w-3xl pb-4">
                 {messages.map((msg, i) => (
-                  <ChatMessage key={i} role={msg.role} content={msg.content} imageUrl={msg.image_url} />
+                  <ChatMessage
+                    key={i}
+                    role={msg.role}
+                    content={msg.content}
+                    imageUrl={msg.image_url}
+                    onEdit={msg.role === "user" && !isStreaming ? (newContent) => handleEditMessage(i, newContent) : undefined}
+                    onResend={msg.role === "user" && !isStreaming ? () => handleResendMessage(i) : undefined}
+                  />
                 ))}
                 {isStreaming && messages[messages.length - 1]?.role !== "assistant" && <ThinkingIndicator />}
                 <div ref={scrollRef} />
