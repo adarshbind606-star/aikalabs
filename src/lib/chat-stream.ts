@@ -4,6 +4,7 @@ type MsgContent = string | Array<{ type: string; text?: string; image_url?: { ur
 type Msg = { role: "user" | "assistant"; content: MsgContent };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+const UNBOUND_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-unbound`;
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
   const { data: { session } } = await supabase.auth.getSession();
@@ -19,14 +20,17 @@ export async function streamChat({
   onDelta,
   onDone,
   onError,
+  mode = "aika",
 }: {
   messages: Msg[];
   onDelta: (deltaText: string) => void;
   onDone: () => void;
   onError: (error: string) => void;
+  mode?: "aika" | "unbound";
 }) {
   const headers = await getAuthHeaders();
-  const resp = await fetch(CHAT_URL, {
+  const url = mode === "unbound" ? UNBOUND_URL : CHAT_URL;
+  const resp = await fetch(url, {
     method: "POST",
     headers,
     body: JSON.stringify({ messages }),

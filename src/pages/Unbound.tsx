@@ -5,10 +5,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { ChatMessage, ThinkingIndicator } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
-import { SakuraPetals } from "@/components/SakuraPetals";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Menu, Cherry, Share2, Download } from "lucide-react";
+import { Menu, Flame, Share2, Download, AlertTriangle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -17,6 +16,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Msg {
   id?: string;
@@ -32,7 +41,9 @@ interface Conversation {
   updated_at: string;
 }
 
-export default function Chat() {
+const ACK_KEY = "aika-unbound-acknowledged";
+
+export default function Unbound() {
   const { session, user, loading } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
@@ -41,9 +52,27 @@ export default function Chat() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Warning + loading flow
+  const [showWarning, setShowWarning] = useState(false);
+  const [bootLoading, setBootLoading] = useState(true);
+  const [acknowledged, setAcknowledged] = useState(false);
+
   useEffect(() => {
-    if (user) loadConversations();
-  }, [user]);
+    const ack = sessionStorage.getItem(ACK_KEY) === "1";
+    if (ack) {
+      setAcknowledged(true);
+      // brief boot animation
+      const t = setTimeout(() => setBootLoading(false), 1200);
+      return () => clearTimeout(t);
+    } else {
+      setShowWarning(true);
+      setBootLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user && acknowledged) loadConversations();
+  }, [user, acknowledged]);
 
   useEffect(() => {
     if (activeConvoId) loadMessages(activeConvoId);
@@ -57,7 +86,7 @@ export default function Chat() {
     const { data } = await supabase
       .from("conversations")
       .select("*")
-      .eq("mode", "aika")
+      .eq("mode", "unbound")
       .order("updated_at", { ascending: false });
     if (data) setConversations(data);
   };
@@ -75,7 +104,7 @@ export default function Chat() {
     if (!user) return;
     const { data } = await supabase
       .from("conversations")
-      .insert({ user_id: user.id, title: "New Conversation", mode: "aika" })
+      .insert({ user_id: user.id, title: "New Unbound Chat", mode: "unbound" })
       .select()
       .single();
     if (data) {
@@ -141,6 +170,7 @@ export default function Chat() {
     };
 
     await streamChat({
+      mode: "unbound",
       messages: chatHistory,
       onDelta: upsertAssistant,
       onDone: async () => {
@@ -163,7 +193,7 @@ export default function Chat() {
     if (!convoId) {
       const { data } = await supabase
         .from("conversations")
-        .insert({ user_id: user.id, title: "New Conversation", mode: "aika" })
+        .insert({ user_id: user.id, title: "New Unbound Chat", mode: "unbound" })
         .select()
         .single();
       if (!data) return;
@@ -186,14 +216,10 @@ export default function Chat() {
 
   const handleEditMessage = useCallback(async (index: number, newContent: string) => {
     if (!activeConvoId || !user || isStreaming) return;
-
-    // Delete all messages from this index onward in DB
     const msgsToDelete = messages.slice(index).filter(m => m.id);
     for (const msg of msgsToDelete) {
       if (msg.id) await supabase.from("messages").delete().eq("id", msg.id);
     }
-
-    // Update local messages: keep up to index, replace with edited
     const edited: Msg = { role: "user", content: newContent, image_url: messages[index].image_url };
     const newMessages = [...messages.slice(0, index), edited];
     setMessages(newMessages);
@@ -203,13 +229,10 @@ export default function Chat() {
 
   const handleResendMessage = useCallback(async (index: number) => {
     if (!activeConvoId || !user || isStreaming) return;
-
-    // Delete all messages after this one in DB
     const msgsToDelete = messages.slice(index + 1).filter(m => m.id);
     for (const msg of msgsToDelete) {
       if (msg.id) await supabase.from("messages").delete().eq("id", msg.id);
     }
-
     const newMessages = messages.slice(0, index + 1);
     setMessages(newMessages);
     await streamResponse(activeConvoId, newMessages);
@@ -217,30 +240,98 @@ export default function Chat() {
 
   const handleShareChat = () => {
     if (messages.length === 0) return;
-    const text = messages.map(m => `${m.role === "user" ? "You" : "Aika"}: ${m.content}`).join("\n\n");
+    const text = messages.map(m => `${m.role === "user" ? "You" : "AikaUnbound"}: ${m.content}`).join("\n\n");
     navigator.clipboard.writeText(text);
-    toast.success("Chat copied to clipboard! 🌸");
+    toast.success("Chat copied to clipboard");
   };
 
   const handleDownloadChat = () => {
     if (messages.length === 0) return;
-    const text = messages.map(m => `${m.role === "user" ? "You" : "Aika"}: ${m.content}`).join("\n\n");
+    const text = messages.map(m => `${m.role === "user" ? "You" : "AikaUnbound"}: ${m.content}`).join("\n\n");
     const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `aika-chat-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.download = `aika-unbound-${new Date().toISOString().slice(0, 10)}.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("Chat downloaded! 🌸");
+    toast.success("Chat downloaded");
+  };
+
+  const handleAcknowledge = () => {
+    sessionStorage.setItem(ACK_KEY, "1");
+    setShowWarning(false);
+    setAcknowledged(true);
+    setBootLoading(true);
+    setTimeout(() => setBootLoading(false), 1800);
   };
 
   if (loading) return null;
   if (!session) return <Navigate to="/" replace />;
 
+  // Warning gate (renders before anything else)
+  if (showWarning) {
+    return (
+      <div className="unbound-theme relative flex h-screen items-center justify-center overflow-hidden bg-background">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--destructive)/0.15),transparent_70%)]" />
+        <AlertDialog open={showWarning} onOpenChange={() => { /* gated */ }}>
+          <AlertDialogContent className="border-destructive/40">
+            <AlertDialogHeader>
+              <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/15">
+                <AlertTriangle className="h-7 w-7 text-destructive" />
+              </div>
+              <AlertDialogTitle className="text-center font-display text-2xl text-destructive">
+                Entering AikaUnbound
+              </AlertDialogTitle>
+              <AlertDialogDescription className="space-y-3 pt-2 text-center">
+                <span className="block">
+                  AikaUnbound is the unrestricted, uncensored alter-ego of Aika.
+                  She speaks bluntly and answers nearly anything without sugar-coating.
+                </span>
+                <span className="block text-sm">
+                  Responses may include mature themes, dark humor, and edgy opinions.
+                  Continue only if you're 18+ and comfortable with that.
+                </span>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => window.history.back()}>Take me back</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleAcknowledge}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                I understand, enter
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    );
+  }
+
+  // Boot loading screen
+  if (bootLoading) {
+    return (
+      <div className="unbound-theme relative flex h-screen flex-col items-center justify-center gap-6 overflow-hidden bg-background">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--destructive)/0.18),transparent_70%)]" />
+        <div className="relative">
+          <div className="absolute inset-0 animate-ping rounded-full bg-destructive/30" />
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-destructive/15 ring-1 ring-destructive/40">
+            <Flame className="h-10 w-10 text-destructive" />
+          </div>
+        </div>
+        <div className="text-center">
+          <h1 className="font-display text-2xl text-destructive">Awakening AikaUnbound…</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Loading kimono-zm-unbound model</p>
+        </div>
+        <Loader2 className="h-5 w-5 animate-spin text-destructive" />
+      </div>
+    );
+  }
+
   return (
-    <div className="relative flex h-screen overflow-hidden bg-background">
-      <SakuraPetals count={8} />
+    <div className="unbound-theme relative flex h-screen overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--destructive)/0.10),transparent_60%)]" />
       <ChatSidebar
         conversations={conversations}
         activeId={activeConvoId}
@@ -249,16 +340,19 @@ export default function Chat() {
         onDelete={deleteConversation}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        activePage="chat"
+        activePage="unbound"
       />
 
       <div className="relative z-10 flex flex-1 flex-col">
-        <header className="flex items-center gap-3 border-b border-border bg-background/80 px-4 py-3 backdrop-blur-sm">
+        <header className="flex items-center gap-3 border-b border-destructive/30 bg-background/80 px-4 py-3 backdrop-blur-sm">
           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(true)}>
             <Menu className="h-5 w-5" />
           </Button>
-          <Cherry className="h-5 w-5 text-primary" />
-          <h2 className="font-display text-lg text-primary">Aika-AI 2.1</h2>
+          <Flame className="h-5 w-5 text-destructive" />
+          <h2 className="font-display text-lg text-destructive">AikaUnbound</h2>
+          <span className="rounded-full border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-destructive">
+            uncensored
+          </span>
           <div className="ml-auto">
             {activeConvoId && messages.length > 0 && (
               <DropdownMenu>
@@ -282,15 +376,18 @@ export default function Chat() {
 
         {!activeConvoId && messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-              <Cherry className="h-12 w-12 text-primary" />
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-destructive/15 ring-1 ring-destructive/40">
+              <Flame className="h-10 w-10 text-destructive" />
             </div>
-            <h2 className="font-display text-2xl text-primary">Welcome to Aika-AI!</h2>
+            <h2 className="font-display text-2xl text-destructive">AikaUnbound is awake</h2>
             <p className="max-w-md text-center text-muted-foreground">
-              I'm your anime-themed AI assistant 🌸 Ask me anything, or tell me to generate an image!
+              No filters. No lectures. Ask anything — she'll answer straight.
             </p>
-            <Button onClick={createConversation} className="gap-2">
-              Start a New Chat
+            <Button
+              onClick={createConversation}
+              className="gap-2 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Start Unbound Chat
             </Button>
           </div>
         ) : (

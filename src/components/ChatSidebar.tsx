@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -25,7 +25,7 @@ interface ChatSidebarProps {
   onDelete: (id: string) => void;
   isOpen: boolean;
   onClose: () => void;
-  activePage?: "chat" | "image" | "settings";
+  activePage?: "chat" | "image" | "settings" | "unbound";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -124,6 +124,21 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           >
             <Settings className="h-4 w-4 shrink-0" />
             <span className="truncate text-xs">Settings</span>
+          </Button>
+        </div>
+
+        <div className="border-b border-sidebar-border p-2">
+          <Button
+            onClick={() => { navigate("/unbound"); onClose(); }}
+            className={cn(
+              "w-full gap-2 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive",
+              activePage === "unbound" && "bg-destructive/15 text-destructive"
+            )}
+            variant="outline"
+            size="sm"
+          >
+            <Flame className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs font-semibold tracking-wide">AikaUnbound</span>
           </Button>
         </div>
 
