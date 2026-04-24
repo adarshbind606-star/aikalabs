@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { Button } from "@/components/ui/button";
-import { Cherry, MessageCircle, Image, Moon, Shield } from "lucide-react";
+import { Cherry, MessageCircle, Image, Moon, Shield, Flame } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const features = [
@@ -14,6 +14,11 @@ const features = [
     icon: Image,
     title: "Image Generation",
     description: "Ask Aika to create stunning images from your descriptions. Just describe what you want!",
+  },
+  {
+    icon: Flame,
+    title: "AikaUnbound Mode",
+    description: "Unlock Aika's uncensored alter-ego — an unfiltered 18+ assistant with its own separate chat history and bold red-themed UI.",
   },
   {
     icon: Moon,
