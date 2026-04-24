@@ -41,6 +41,11 @@ export function ChatMessage({ role, content, imageUrl, onEdit, onResend }: ChatM
     toast.success("Copied to clipboard!");
   };
 
+  const handleCopyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    toast.success("Code copied! 🌸");
+  };
+
   return (
     <div className={cn("group flex gap-3 px-4 py-4", `font-size-${fontSize}`, isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
@@ -80,7 +85,61 @@ export function ChatMessage({ role, content, imageUrl, onEdit, onResend }: ChatM
             </div>
           ) : (
             <div className="markdown-content">
-              <ReactMarkdown>{content}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  pre: ({ children, ...props }) => {
+                    // Extract raw code text from the nested <code> child
+                    const extractText = (node: any): string => {
+                      if (typeof node === "string") return node;
+                      if (Array.isArray(node)) return node.map(extractText).join("");
+                      if (node?.props?.children) return extractText(node.props.children);
+                      return "";
+                    };
+                    const codeText = extractText(children);
+                    return (
+                      <div className="relative group/code my-2">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => handleCopyCode(codeText)}
+                          className="absolute right-2 top-2 h-7 px-2 opacity-0 group-hover/code:opacity-100 transition-opacity z-10"
+                          title="Copy code"
+                        >
+                          <Copy className="h-3 w-3 mr-1" />
+                          <span className="text-xs">Copy</span>
+                        </Button>
+                        <pre
+                          {...props}
+                          className="overflow-x-auto rounded-lg bg-muted/60 p-3 text-xs"
+                        >
+                          {children}
+                        </pre>
+                      </div>
+                    );
+                  },
+                  code: ({ className, children, ...props }: any) => {
+                    const isInline = !className?.includes("language-");
+                    if (isInline) {
+                      return (
+                        <code
+                          {...props}
+                          className="rounded bg-muted/60 px-1 py-0.5 text-[0.85em]"
+                        >
+                          {children}
+                        </code>
+                      );
+                    }
+                    return (
+                      <code {...props} className={className}>
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
+              >
+                {content}
+              </ReactMarkdown>
             </div>
           )}
         </div>
