@@ -57,6 +57,7 @@ export default function Chat() {
     const { data } = await supabase
       .from("conversations")
       .select("*")
+      .eq("mode", "aika")
       .order("updated_at", { ascending: false });
     if (data) setConversations(data);
   };
@@ -74,7 +75,7 @@ export default function Chat() {
     if (!user) return;
     const { data } = await supabase
       .from("conversations")
-      .insert({ user_id: user.id, title: "New Conversation" })
+      .insert({ user_id: user.id, title: "New Conversation", mode: "aika" })
       .select()
       .single();
     if (data) {
@@ -162,7 +163,7 @@ export default function Chat() {
     if (!convoId) {
       const { data } = await supabase
         .from("conversations")
-        .insert({ user_id: user.id, title: "New Conversation" })
+        .insert({ user_id: user.id, title: "New Conversation", mode: "aika" })
         .select()
         .single();
       if (!data) return;
