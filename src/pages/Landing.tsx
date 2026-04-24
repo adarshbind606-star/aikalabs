@@ -18,7 +18,7 @@ const features = [
   {
     icon: Flame,
     title: "AikaUnbound Mode",
-    description: "Unlock Aika's uncensored alter-ego — an unfiltered 18+ assistant with its own separate chat history and bold red-themed UI.",
+    description: "Switch to Aika's uncensored alter-ego for raw, unfiltered answers on any topic — no lectures, no disclaimers, just direct responses.",
   },
   {
     icon: Moon,
