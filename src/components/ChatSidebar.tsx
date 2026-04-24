@@ -142,11 +142,11 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </Button>
         </div>
 
-        {activePage === "chat" && (
+        {(activePage === "chat" || activePage === "unbound") && (
           <>
             <div className="p-3">
               <Button onClick={onNew} className="w-full gap-2" variant="outline">
-                <Plus className="h-4 w-4" /> New Chat
+                <Plus className="h-4 w-4" /> {activePage === "unbound" ? "New Unbound Chat" : "New Chat"}
               </Button>
             </div>
 
