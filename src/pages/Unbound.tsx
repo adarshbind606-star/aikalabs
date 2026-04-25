@@ -7,7 +7,8 @@ import { ChatMessage, ThinkingIndicator } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Menu, Flame, Share2, Download, AlertTriangle, Loader2 } from "lucide-react";
+import { Flame, Share2, Download, AlertTriangle, Loader2 } from "lucide-react";
+import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
