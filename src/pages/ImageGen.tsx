@@ -5,7 +5,8 @@ import { ChatSidebar } from "@/components/ChatSidebar";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { generateImage } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Menu, Cherry, Send, ImagePlus, Trash2, Download, Share2 } from "lucide-react";
+import { Cherry, Send, ImagePlus, Trash2, Download, Share2 } from "lucide-react";
+import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
@@ -129,17 +130,12 @@ export default function ImageGen() {
 
       <div className="relative z-10 flex flex-1 flex-col">
         <header className="flex items-center gap-3 border-b border-border bg-background/80 px-4 py-3 backdrop-blur-sm">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              if (window.innerWidth < 768) setSidebarOpen(true);
-              else setDesktopSidebarHidden((v) => !v);
-            }}
-            title={desktopSidebarHidden ? "Show sidebar" : "Hide sidebar"}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+          <SidebarToggle
+            mobileOpen={sidebarOpen}
+            onMobileToggle={() => setSidebarOpen((v) => !v)}
+            desktopHidden={desktopSidebarHidden}
+            onDesktopToggle={() => setDesktopSidebarHidden((v) => !v)}
+          />
           <ImagePlus className="h-5 w-5 text-primary" />
           <h2 className="font-display text-lg text-primary">Image Studio</h2>
         </header>

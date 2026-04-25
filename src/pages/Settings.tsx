@@ -12,7 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
-import { Menu, Settings as SettingsIcon, User, Palette, Trash2, Brain, Cherry } from "lucide-react";
+import { Settings as SettingsIcon, User, Palette, Trash2, Brain, Cherry } from "lucide-react";
+import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 import {
@@ -164,17 +165,12 @@ export default function Settings() {
 
       <div className="relative z-10 flex flex-1 flex-col">
         <header className="flex items-center gap-3 border-b border-border bg-background/80 px-4 py-3 backdrop-blur-sm">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              if (window.innerWidth < 768) setSidebarOpen(true);
-              else setDesktopSidebarHidden((v) => !v);
-            }}
-            title={desktopSidebarHidden ? "Show sidebar" : "Hide sidebar"}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+          <SidebarToggle
+            mobileOpen={sidebarOpen}
+            onMobileToggle={() => setSidebarOpen((v) => !v)}
+            desktopHidden={desktopSidebarHidden}
+            onDesktopToggle={() => setDesktopSidebarHidden((v) => !v)}
+          />
           <SettingsIcon className="h-5 w-5 text-primary" />
           <h2 className="font-display text-lg text-primary">Settings</h2>
         </header>
