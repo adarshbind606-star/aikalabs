@@ -50,6 +50,7 @@ export default function Unbound() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarHidden, setDesktopSidebarHidden] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Warning + loading flow
@@ -340,12 +341,21 @@ export default function Unbound() {
         onDelete={deleteConversation}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        desktopHidden={desktopSidebarHidden}
         activePage="unbound"
       />
 
       <div className="relative z-10 flex flex-1 flex-col">
         <header className="flex items-center gap-3 border-b border-destructive/30 bg-background/80 px-4 py-3 backdrop-blur-sm">
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(true)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              if (window.innerWidth < 768) setSidebarOpen(true);
+              else setDesktopSidebarHidden((v) => !v);
+            }}
+            title={desktopSidebarHidden ? "Show sidebar" : "Hide sidebar"}
+          >
             <Menu className="h-5 w-5" />
           </Button>
           <Flame className="h-5 w-5 text-destructive" />

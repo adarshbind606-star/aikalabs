@@ -25,6 +25,7 @@ interface ChatSidebarProps {
   onDelete: (id: string) => void;
   isOpen: boolean;
   onClose: () => void;
+  desktopHidden?: boolean;
   activePage?: "chat" | "image" | "settings" | "unbound";
 }
 
@@ -48,7 +49,7 @@ function groupByDate(conversations: Conversation[]) {
   return groups;
 }
 
-export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete, isOpen, onClose, activePage = "chat" }: ChatSidebarProps) {
+export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete, isOpen, onClose, desktopHidden = false, activePage = "chat" }: ChatSidebarProps) {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
   const groups = groupByDate(conversations);
@@ -87,8 +88,11 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
       {isOpen && <div className="fixed inset-0 z-30 bg-foreground/20 md:hidden" onClick={onClose} />}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 flex h-full w-72 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-300 md:relative md:translate-x-0",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          "fixed left-0 top-0 z-40 flex h-full w-72 flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 md:relative",
+          isOpen ? "translate-x-0" : "-translate-x-full",
+          desktopHidden
+            ? "md:w-0 md:-translate-x-full md:overflow-hidden md:border-r-0"
+            : "md:w-72 md:translate-x-0"
         )}
       >
         <div className="flex items-center gap-2 border-b border-sidebar-border p-4">
