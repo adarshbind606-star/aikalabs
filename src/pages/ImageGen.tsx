@@ -5,7 +5,7 @@ import { ChatSidebar } from "@/components/ChatSidebar";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { generateImage } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Menu, Cherry, Send, ImagePlus, Trash2 } from "lucide-react";
+import { Menu, Cherry, Send, ImagePlus, Trash2, Download, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,6 +64,50 @@ export default function ImageGen() {
     toast.success("Image removed 🌸");
   };
 
+  const handleDownload = async (url: string, prompt: string) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      const safeName = prompt.slice(0, 40).replace(/[^a-z0-9]+/gi, "_") || "aika-image";
+      a.download = `${safeName}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(blobUrl);
+      toast.success("Downloaded! 🌸");
+    } catch {
+      toast.error("Failed to download image");
+    }
+  };
+
+  const handleShare = async (url: string, prompt: string) => {
+    try {
+      // Try native share with file first (best on mobile)
+      if (navigator.share) {
+        try {
+          const res = await fetch(url);
+          const blob = await res.blob();
+          const file = new File([blob], "aika-image.png", { type: blob.type || "image/png" });
+          if ((navigator as any).canShare && (navigator as any).canShare({ files: [file] })) {
+            await navigator.share({ files: [file], title: "Aika Image", text: prompt });
+            return;
+          }
+          await navigator.share({ title: "Aika Image", text: prompt, url });
+          return;
+        } catch (err: any) {
+          if (err?.name === "AbortError") return;
+        }
+      }
+      await navigator.clipboard.writeText(url);
+      toast.success("Image link copied to clipboard! 🌸");
+    } catch {
+      toast.error("Failed to share image");
+    }
+  };
+
   if (loading) return null;
   if (!session) return <Navigate to="/" replace />;
 
@@ -114,18 +158,40 @@ export default function ImageGen() {
               {images.map((img, i) => (
                 <div key={i} className="group relative overflow-hidden rounded-2xl border border-border bg-card">
                   <img src={img.url} alt={img.prompt} className="aspect-square w-full object-cover" />
-                  {img.id && (
+                  <div className="absolute right-2 top-2 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
                     <Button
                       type="button"
                       variant="secondary"
                       size="icon"
-                      onClick={() => handleDelete(img.id)}
-                      className="absolute right-2 top-2 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
-                      title="Delete"
+                      onClick={() => handleDownload(img.url, img.prompt)}
+                      className="h-8 w-8"
+                      title="Download"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Download className="h-4 w-4" />
                     </Button>
-                  )}
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="icon"
+                      onClick={() => handleShare(img.url, img.prompt)}
+                      className="h-8 w-8"
+                      title="Share"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                    {img.id && (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="icon"
+                        onClick={() => handleDelete(img.id)}
+                        className="h-8 w-8"
+                        title="Delete"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 transition-opacity group-hover:opacity-100">
                     <p className="text-sm text-white">{img.prompt}</p>
                   </div>
