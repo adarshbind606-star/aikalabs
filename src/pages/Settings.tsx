@@ -37,6 +37,7 @@ export default function Settings() {
   const { session, user, loading } = useAuth();
   const { theme, setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarHidden, setDesktopSidebarHidden] = useState(false);
 
   // Profile
   const [displayName, setDisplayName] = useState("");
