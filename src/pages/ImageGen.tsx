@@ -22,6 +22,7 @@ export default function ImageGen() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [images, setImages] = useState<GeneratedImage[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarHidden, setDesktopSidebarHidden] = useState(false);
 
   useEffect(() => {
     if (!user) return;
