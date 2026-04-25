@@ -43,7 +43,7 @@ export function SidebarToggle({
       : "Hide sidebar";
 
   return (
-    <Tooltip>
+    <Tooltip key={label}>
       <TooltipTrigger asChild>
         <Button
           variant="ghost"
@@ -54,7 +54,15 @@ export function SidebarToggle({
           <Icon className="h-5 w-5" />
         </Button>
       </TooltipTrigger>
-      <TooltipContent side="bottom">{label}</TooltipContent>
+      <TooltipContent
+        side="bottom"
+        align="start"
+        sideOffset={8}
+        collisionPadding={12}
+        className="z-[60]"
+      >
+        {label}
+      </TooltipContent>
     </Tooltip>
   );
 }
