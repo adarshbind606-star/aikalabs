@@ -347,17 +347,12 @@ export default function Unbound() {
 
       <div className="relative z-10 flex flex-1 flex-col">
         <header className="flex items-center gap-3 border-b border-destructive/30 bg-background/80 px-4 py-3 backdrop-blur-sm">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              if (window.innerWidth < 768) setSidebarOpen(true);
-              else setDesktopSidebarHidden((v) => !v);
-            }}
-            title={desktopSidebarHidden ? "Show sidebar" : "Hide sidebar"}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+          <SidebarToggle
+            mobileOpen={sidebarOpen}
+            onMobileToggle={() => setSidebarOpen((v) => !v)}
+            desktopHidden={desktopSidebarHidden}
+            onDesktopToggle={() => setDesktopSidebarHidden((v) => !v)}
+          />
           <Flame className="h-5 w-5 text-destructive" />
           <h2 className="font-display text-lg text-destructive">AikaUnbound</h2>
           <span className="rounded-full border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-destructive">
