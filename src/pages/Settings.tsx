@@ -12,7 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
-import { Menu, Settings as SettingsIcon, User, Palette, Trash2, Brain, Cherry } from "lucide-react";
+import { Settings as SettingsIcon, User, Palette, Trash2, Brain, Cherry } from "lucide-react";
+import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 import {
