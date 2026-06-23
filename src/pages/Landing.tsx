@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { Button } from "@/components/ui/button";
-import { Cherry, MessageCircle, Image, Moon, Shield, Flame, ShieldCheck, ArrowRight } from "lucide-react";
+import { Cherry, MessageCircle, Image, Moon, Shield, Flame, ArrowRight } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const features = [
@@ -88,30 +88,28 @@ export default function Landing() {
       </section>
 
       {/* Our Team — Aegix */}
-      <section className="relative z-10 mx-auto max-w-5xl px-6 pb-24">
+      <section className="relative z-10 mx-auto max-w-sm px-6 pb-24">
         <a
           href="https://aegix.lovable.app"
           target="_blank"
           rel="noopener noreferrer"
-          className="group block rounded-2xl border border-green-500/40 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-900/20 p-6 backdrop-blur-sm transition-all hover:border-green-400/70 hover:shadow-lg hover:shadow-green-500/20 md:p-8"
+          className="group block aspect-square rounded-2xl border border-green-500/40 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-900/20 p-5 backdrop-blur-sm transition-all hover:border-green-400/70 hover:shadow-lg hover:shadow-green-500/20"
         >
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-green-500/40 bg-green-500/10 px-3 py-1 text-xs font-mono uppercase tracking-wider text-green-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" /> Our Team
-          </div>
-          <div className="flex flex-col gap-5 md:flex-row md:items-center">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-green-500/40 bg-green-500/10 shadow-inner shadow-green-500/20">
-              <ShieldCheck className="h-9 w-9 text-green-400" strokeWidth={2.2} />
+          <div className="flex h-full flex-col">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-green-500/40 bg-green-500/10 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-green-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" /> Our Team
             </div>
-            <div className="flex-1">
-              <h3 className="font-display text-2xl text-green-400">
-                Aegix <span className="font-mono text-xs text-green-500/70">v1.0</span>
-              </h3>
-              <p className="mt-1 text-sm text-foreground/80">
-                The cybersecurity platform that powers <span className="font-semibold text-green-400">AikaLabs</span> website security 🛡️ — continuous TLS, header, cookie & surface monitoring with zero install. Same team. Same craft. Different battlefield.
-              </p>
-              <div className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-green-400 transition-transform group-hover:translate-x-1">
-                Visit aegix.lovable.app <ArrowRight className="h-4 w-4" />
-              </div>
+            <div className="mt-3 flex h-12 w-12 items-center justify-center rounded-xl border border-green-500/40 bg-green-500/10 shadow-inner shadow-green-500/20">
+              <Shield className="h-7 w-7 text-green-400" strokeWidth={2.2} />
+            </div>
+            <h3 className="mt-3 font-display text-xl text-green-400">
+              Aegix <span className="font-mono text-[10px] text-green-500/70">v1.0</span>
+            </h3>
+            <p className="mt-1 text-xs leading-relaxed text-foreground/80">
+              The cybersecurity platform powering <span className="font-semibold text-green-400">AikaLabs</span> security 🛡️ — TLS, headers & surface monitoring with zero install.
+            </p>
+            <div className="mt-auto inline-flex items-center gap-1.5 text-xs font-medium text-green-400 transition-transform group-hover:translate-x-1">
+              Visit aegix.lovable.app <ArrowRight className="h-3.5 w-3.5" />
             </div>
           </div>
         </a>
