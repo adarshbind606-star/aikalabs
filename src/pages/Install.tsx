@@ -59,7 +59,7 @@ function New-AikaShortcut($Path) {
   $shell = New-Object -ComObject WScript.Shell
   $sc = $shell.CreateShortcut($Path)
   $sc.TargetPath = $Browser
-  $sc.Arguments  = "--app=$AppUrl --user-data-dir=`"$InstallDir\\profile`""
+  $sc.Arguments  = "--app=$AppUrl --user-data-dir=\`"$InstallDir\\profile\`""
   $sc.IconLocation = $IconPath
   $sc.WorkingDirectory = $InstallDir
   $sc.Description = 'Aika-AI - your anime-themed AI assistant'
@@ -83,7 +83,7 @@ Write-Host ''
 # 5. Offer to launch
 $launch = Read-Host 'Launch Aika-AI now? (Y/n)'
 if ($launch -ne 'n' -and $launch -ne 'N') {
-  Start-Process -FilePath $Browser -ArgumentList "--app=$AppUrl","--user-data-dir=`"$InstallDir\\profile`""
+  Start-Process -FilePath $Browser -ArgumentList "--app=$AppUrl","--user-data-dir=\`"$InstallDir\\profile\`""
 }
 `;
 
