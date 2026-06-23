@@ -27,12 +27,12 @@ Write-Host ''
 # 1. Find a Chromium browser (Edge preferred, then Chrome, then Brave)
 $browserCandidates = @(
   "$env:ProgramFiles\\Microsoft\\Edge\\Application\\msedge.exe",
-  "$\{env:ProgramFiles(x86)\}\\Microsoft\\Edge\\Application\\msedge.exe",
+  "\${env:ProgramFiles(x86)}\\Microsoft\\Edge\\Application\\msedge.exe",
   "$env:ProgramFiles\\Google\\Chrome\\Application\\chrome.exe",
-  "$\{env:ProgramFiles(x86)\}\\Google\\Chrome\\Application\\chrome.exe",
+  "\${env:ProgramFiles(x86)}\\Google\\Chrome\\Application\\chrome.exe",
   "$env:LOCALAPPDATA\\Google\\Chrome\\Application\\chrome.exe",
   "$env:ProgramFiles\\BraveSoftware\\Brave-Browser\\Application\\brave.exe"
-) | ForEach-Object { $ExecutionContext.InvokeCommand.ExpandString($_) }
+) | ForEach-Object { \$ExecutionContext.InvokeCommand.ExpandString(\$_) }
 
 $Browser = $browserCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
 if (-not $Browser) {
