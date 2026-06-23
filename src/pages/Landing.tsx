@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { Button } from "@/components/ui/button";
-import { Cherry, MessageCircle, Image, Moon, Shield, Flame, ArrowRight } from "lucide-react";
+import { Cherry, MessageCircle, Image, Moon, Shield, Flame } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const features = [
@@ -86,32 +86,6 @@ export default function Landing() {
           ))}
         </div>
       </section>
-
-      {/* Our Team — Aegix (fixed corner) */}
-      <a
-        href="https://aegix.lovable.app"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group fixed bottom-4 right-4 z-20 hidden h-60 w-60 rounded-2xl border border-green-500/40 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-900/30 p-4 backdrop-blur-md transition-all hover:border-green-400/70 hover:shadow-lg hover:shadow-green-500/20 sm:block"
-      >
-          <div className="flex h-full flex-col">
-            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-green-500/40 bg-green-500/10 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-green-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" /> Our Team
-            </div>
-          <div className="mt-2 flex h-10 w-10 items-center justify-center rounded-xl border border-green-500/40 bg-green-500/10 shadow-inner shadow-green-500/20">
-            <Shield className="h-6 w-6 text-green-400" strokeWidth={2.2} />
-          </div>
-          <h3 className="mt-2 font-display text-lg text-green-400">
-            Aegix <span className="font-mono text-[10px] text-green-500/70">v1.0</span>
-          </h3>
-          <p className="mt-1 text-[11px] leading-snug text-foreground/80">
-            Cybersecurity powering <span className="font-semibold text-green-400">AikaLabs</span> 🛡️ — TLS & surface monitoring, zero install.
-          </p>
-          <div className="mt-auto inline-flex items-center gap-1 text-[11px] font-medium text-green-400 transition-transform group-hover:translate-x-1">
-            Visit aegix.lovable.app <ArrowRight className="h-3 w-3" />
-          </div>
-        </div>
-      </a>
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-border py-6 text-center text-sm text-muted-foreground">
