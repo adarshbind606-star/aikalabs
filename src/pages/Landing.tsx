@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { Button } from "@/components/ui/button";
-import { Cherry, MessageCircle, Image, Moon, Shield, Flame, Download } from "lucide-react";
+import { Cherry, MessageCircle, Image, Moon, Shield, Flame } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const features = [
@@ -66,11 +66,6 @@ export default function Landing() {
           <Link to="/auth">
             <Button size="lg" className="gap-2 text-base">
               <Cherry className="h-4 w-4" /> Get Started
-            </Button>
-          </Link>
-          <Link to="/install">
-            <Button size="lg" variant="outline" className="gap-2 text-base">
-              <Download className="h-4 w-4" /> Install for Windows
             </Button>
           </Link>
         </div>
