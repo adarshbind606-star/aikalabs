@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 import Unbound from "./pages/Unbound";
+import Install from "./pages/Install";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/image-gen" element={<ImageGen />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/unbound" element={<Unbound />} />
+              <Route path="/install" element={<Install />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
