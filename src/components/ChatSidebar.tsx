@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -26,7 +26,7 @@ interface ChatSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   desktopHidden?: boolean;
-  activePage?: "chat" | "image" | "settings" | "unbound";
+  activePage?: "chat" | "image" | "settings" | "unbound" | "ren";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -146,11 +146,30 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </Button>
         </div>
 
-        {(activePage === "chat" || activePage === "unbound") && (
+        <div className="border-b border-sidebar-border p-2">
+          <Button
+            onClick={() => { navigate("/ren"); onClose(); }}
+            className={cn(
+              "w-full gap-2",
+              activePage === "ren" && "bg-primary/10"
+            )}
+            style={{
+              borderColor: "hsl(210 90% 55% / 0.4)",
+              color: "hsl(210 90% 45%)",
+            }}
+            variant="outline"
+            size="sm"
+          >
+            <Cpu className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs font-semibold tracking-wide">Ren 2.5 · GLM</span>
+          </Button>
+        </div>
+
+        {(activePage === "chat" || activePage === "unbound" || activePage === "ren") && (
           <>
             <div className="p-3">
               <Button onClick={onNew} className="w-full gap-2" variant="outline">
-                <Plus className="h-4 w-4" /> {activePage === "unbound" ? "New Unbound Chat" : "New Chat"}
+                <Plus className="h-4 w-4" /> {activePage === "unbound" ? "New Unbound Chat" : activePage === "ren" ? "New Ren Chat" : "New Chat"}
               </Button>
             </div>
 
