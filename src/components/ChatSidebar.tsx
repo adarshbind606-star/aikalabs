@@ -26,7 +26,7 @@ interface ChatSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   desktopHidden?: boolean;
-  activePage?: "chat" | "image" | "settings" | "unbound";
+  activePage?: "chat" | "image" | "settings" | "unbound" | "ren";
 }
 
 function groupByDate(conversations: Conversation[]) {
