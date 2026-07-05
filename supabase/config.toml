@@ -5,6 +5,3 @@ verify_jwt = false
 
 [functions.generate-image]
 verify_jwt = false
-
-[functions.chat-ren]
-verify_jwt = false
