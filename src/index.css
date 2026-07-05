@@ -1,100 +1,110 @@
-@import url('https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 340 30% 97%;
-    --foreground: 330 20% 15%;
+    /* Light — soft ivory paper with midnight ink & sakura */
+    --background: 40 40% 97%;
+    --foreground: 240 40% 10%;
 
-    --card: 340 25% 95%;
-    --card-foreground: 330 20% 15%;
+    --card: 40 30% 99%;
+    --card-foreground: 240 40% 10%;
 
-    --popover: 340 30% 97%;
-    --popover-foreground: 330 20% 15%;
+    --popover: 40 40% 98%;
+    --popover-foreground: 240 40% 10%;
 
-    --primary: 340 60% 65%;
+    --primary: 340 68% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 340 20% 90%;
-    --secondary-foreground: 330 20% 20%;
+    --secondary: 240 30% 92%;
+    --secondary-foreground: 240 40% 15%;
 
-    --muted: 340 15% 92%;
-    --muted-foreground: 330 10% 45%;
+    --muted: 240 15% 93%;
+    --muted-foreground: 240 10% 40%;
 
-    --accent: 290 30% 85%;
-    --accent-foreground: 290 40% 25%;
+    --accent: 44 75% 62%;
+    --accent-foreground: 240 40% 10%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 75% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 340 20% 88%;
-    --input: 340 20% 88%;
-    --ring: 340 60% 65%;
+    --border: 240 20% 88%;
+    --input: 240 20% 88%;
+    --ring: 340 68% 60%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    --sakura-light: 340 80% 90%;
-    --sakura-mid: 340 60% 75%;
-    --sakura-dark: 340 50% 55%;
-    --sakura-glow: 340 70% 80%;
+    --sakura-light: 340 80% 88%;
+    --sakura-mid: 340 68% 72%;
+    --sakura-dark: 340 60% 55%;
+    --sakura-glow: 340 90% 78%;
+    --gold: 44 75% 62%;
     --leaf: 140 30% 55%;
 
-    --sidebar-background: 340 25% 95%;
-    --sidebar-foreground: 330 20% 20%;
-    --sidebar-primary: 340 60% 65%;
+    --gradient-hero: radial-gradient(ellipse at top left, hsl(340 80% 92%) 0%, transparent 55%), radial-gradient(ellipse at bottom right, hsl(44 90% 88%) 0%, transparent 50%), hsl(40 40% 97%);
+    --gradient-ink: linear-gradient(135deg, hsl(240 40% 10%), hsl(240 45% 18%));
+    --shadow-elegant: 0 30px 80px -30px hsl(340 60% 40% / 0.25);
+
+    --sidebar-background: 40 35% 96%;
+    --sidebar-foreground: 240 40% 15%;
+    --sidebar-primary: 340 68% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 340 20% 90%;
-    --sidebar-accent-foreground: 330 20% 20%;
-    --sidebar-border: 340 20% 88%;
-    --sidebar-ring: 340 60% 65%;
+    --sidebar-accent: 240 25% 92%;
+    --sidebar-accent-foreground: 240 40% 15%;
+    --sidebar-border: 240 20% 88%;
+    --sidebar-ring: 340 68% 60%;
   }
 
   .dark {
-    --background: 260 30% 8%;
-    --foreground: 340 30% 92%;
+    /* Dark — Midnight Sakura: near-black indigo, sakura pink, warm gold */
+    --background: 240 40% 5%;
+    --foreground: 40 30% 94%;
 
-    --card: 260 25% 12%;
-    --card-foreground: 340 30% 92%;
+    --card: 240 40% 9%;
+    --card-foreground: 40 30% 94%;
 
-    --popover: 260 25% 12%;
-    --popover-foreground: 340 30% 92%;
+    --popover: 240 45% 8%;
+    --popover-foreground: 40 30% 94%;
 
-    --primary: 340 70% 65%;
-    --primary-foreground: 260 30% 8%;
+    --primary: 340 72% 70%;
+    --primary-foreground: 240 40% 6%;
 
-    --secondary: 260 20% 18%;
-    --secondary-foreground: 340 30% 90%;
+    --secondary: 240 35% 14%;
+    --secondary-foreground: 40 25% 92%;
 
-    --muted: 260 15% 16%;
-    --muted-foreground: 340 15% 60%;
+    --muted: 240 30% 12%;
+    --muted-foreground: 40 15% 68%;
 
-    --accent: 290 40% 35%;
-    --accent-foreground: 290 30% 90%;
+    --accent: 44 78% 68%;
+    --accent-foreground: 240 40% 6%;
 
-    --destructive: 0 62% 30%;
+    --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 260 15% 20%;
-    --input: 260 15% 20%;
-    --ring: 340 70% 65%;
+    --border: 240 30% 18%;
+    --input: 240 30% 16%;
+    --ring: 340 72% 70%;
 
-    --sakura-light: 340 50% 30%;
-    --sakura-mid: 340 60% 50%;
-    --sakura-dark: 340 50% 40%;
-    --sakura-glow: 340 80% 70%;
-    --leaf: 140 25% 35%;
+    --sakura-light: 340 70% 78%;
+    --sakura-mid: 340 72% 70%;
+    --sakura-dark: 340 60% 55%;
+    --sakura-glow: 340 90% 72%;
+    --gold: 44 78% 68%;
+    --leaf: 140 25% 45%;
 
-    --sidebar-background: 260 25% 10%;
-    --sidebar-foreground: 340 30% 90%;
-    --sidebar-primary: 340 70% 65%;
-    --sidebar-primary-foreground: 260 30% 8%;
-    --sidebar-accent: 260 20% 16%;
-    --sidebar-accent-foreground: 340 30% 90%;
-    --sidebar-border: 260 15% 18%;
-    --sidebar-ring: 340 70% 65%;
+    --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(340 60% 25% / 0.55) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(44 60% 25% / 0.45) 0%, transparent 55%), linear-gradient(180deg, hsl(240 45% 6%), hsl(240 40% 4%));
+    --gradient-ink: linear-gradient(135deg, hsl(340 72% 70%), hsl(44 78% 68%));
+    --shadow-elegant: 0 40px 100px -20px hsl(340 80% 30% / 0.45);
+
+    --sidebar-background: 240 45% 6%;
+    --sidebar-foreground: 40 25% 92%;
+    --sidebar-primary: 340 72% 70%;
+    --sidebar-primary-foreground: 240 40% 6%;
+    --sidebar-accent: 240 35% 12%;
+    --sidebar-accent-foreground: 40 25% 92%;
+    --sidebar-border: 240 30% 16%;
+    --sidebar-ring: 340 72% 70%;
   }
 }
 
@@ -105,11 +115,37 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Noto Sans JP', sans-serif;
+    font-family: 'Work Sans', system-ui, sans-serif;
+    font-feature-settings: "ss01", "cv11";
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Klee One', cursive;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer utilities {
+  .bg-hero { background: var(--gradient-hero); }
+  .bg-ink { background: var(--gradient-ink); }
+  .text-gradient {
+    background: var(--gradient-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .font-italic-serif { font-family: 'Instrument Serif', serif; font-style: italic; }
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+    opacity: 0.06;
+    mix-blend-mode: overlay;
   }
 }
 
