@@ -6,7 +6,6 @@ import {
   MessageCircle,
   Image as ImageIcon,
   Flame,
-  Code2,
   Sparkles,
   ArrowUpRight,
   Moon,
@@ -28,12 +27,6 @@ const capabilities = [
     body: "Describe a dream. Watch it render in seconds. Download, share, or iterate — no gatekeeping.",
   },
   {
-    tag: "03",
-    icon: Code2,
-    title: "KawaiiCode, your pair",
-    body: "A coding companion tuned for craft. Snippets, refactors, and explanations delivered with taste.",
-  },
-  {
     tag: "04",
     icon: Flame,
     title: "AikaUnbound",
@@ -43,7 +36,7 @@ const capabilities = [
 
 const stats = [
   { k: "kimono-zm", v: "The engine" },
-  { k: "4", v: "Modes" },
+  { k: "3", v: "Modes" },
   { k: "∞", v: "Curiosity" },
 ];
 
