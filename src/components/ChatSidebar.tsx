@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -26,7 +26,7 @@ interface ChatSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   desktopHidden?: boolean;
-  activePage?: "chat" | "image" | "settings" | "unbound";
+  activePage?: "chat" | "image" | "settings" | "unbound" | "comet";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -146,11 +146,26 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </Button>
         </div>
 
-        {(activePage === "chat" || activePage === "unbound") && (
+        <div className="border-b border-sidebar-border p-2">
+          <Button
+            onClick={() => { navigate("/comet"); onClose(); }}
+            className={cn(
+              "w-full gap-2 border-sky-400/40 text-sky-300 hover:bg-sky-400/10 hover:text-sky-200",
+              activePage === "comet" && "bg-sky-400/15 text-sky-200"
+            )}
+            variant="outline"
+            size="sm"
+          >
+            <Sparkles className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs font-semibold tracking-wide">Comet · Build</span>
+          </Button>
+        </div>
+
+        {(activePage === "chat" || activePage === "unbound" || activePage === "comet") && (
           <>
             <div className="p-3">
               <Button onClick={onNew} className="w-full gap-2" variant="outline">
-                <Plus className="h-4 w-4" /> {activePage === "unbound" ? "New Unbound Chat" : "New Chat"}
+                <Plus className="h-4 w-4" /> {activePage === "unbound" ? "New Unbound Chat" : activePage === "comet" ? "New Comet Session" : "New Chat"}
               </Button>
             </div>
 
