@@ -27,6 +27,12 @@ const capabilities = [
     body: "Describe a dream. Watch it render in seconds. Download, share, or iterate — no gatekeeping.",
   },
   {
+    tag: "03",
+    icon: Sparkles,
+    title: "Comet, your build agent",
+    body: "A GLM-family coding model tuned for shipping. Write apps, debug fast, design systems — think z.ai or Codex, but yours.",
+  },
+  {
     tag: "04",
     icon: Flame,
     title: "AikaUnbound",
@@ -36,7 +42,7 @@ const capabilities = [
 
 const stats = [
   { k: "kimono-zm", v: "The engine" },
-  { k: "3", v: "Modes" },
+  { k: "4", v: "Modes" },
   { k: "∞", v: "Curiosity" },
 ];
 
@@ -155,7 +161,7 @@ export default function Landing() {
         <div className="mb-12 flex items-end justify-between gap-4">
           <div>
             <div className="text-xs uppercase tracking-[0.24em] text-muted-foreground">§ Capabilities</div>
-            <h2 className="mt-3 font-display text-4xl md:text-6xl">Three ways to think<br /><span className="font-italic-serif text-primary">together</span>.</h2>
+            <h2 className="mt-3 font-display text-4xl md:text-6xl">Four ways to think<br /><span className="font-italic-serif text-primary">together</span>.</h2>
           </div>
           <Sparkles className="hidden h-8 w-8 text-accent md:block" strokeWidth={1.25} />
         </div>
@@ -257,6 +263,7 @@ export default function Landing() {
           <div className="flex gap-6">
             <Link to="/chat" className="hover:text-foreground">Chat</Link>
             <Link to="/image-gen" className="hover:text-foreground">Images</Link>
+            <Link to="/comet" className="hover:text-foreground">Comet</Link>
             <Link to="/unbound" className="hover:text-foreground">Unbound</Link>
             <Link to="/settings" className="hover:text-foreground">Settings</Link>
           </div>
