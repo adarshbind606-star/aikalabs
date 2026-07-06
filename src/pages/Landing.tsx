@@ -27,6 +27,12 @@ const capabilities = [
     body: "Describe a dream. Watch it render in seconds. Download, share, or iterate — no gatekeeping.",
   },
   {
+    tag: "03",
+    icon: Sparkles,
+    title: "Comet, your build agent",
+    body: "A GLM-family coding model tuned for shipping. Write apps, debug fast, design systems — think z.ai or Codex, but yours.",
+  },
+  {
     tag: "04",
     icon: Flame,
     title: "AikaUnbound",
@@ -36,7 +42,7 @@ const capabilities = [
 
 const stats = [
   { k: "kimono-zm", v: "The engine" },
-  { k: "3", v: "Modes" },
+  { k: "4", v: "Modes" },
   { k: "∞", v: "Curiosity" },
 ];
 
