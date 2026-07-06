@@ -112,20 +112,6 @@ Your conversations are designed to remain private and encrypted at rest.
 
 ---
 
-## 🚀 Getting Started
-
-```bash
-git clone https://github.com/your-username/aika.git
-
-cd aika
-
-npm install
-
-npm run dev
-```
-
----
-
 ## ⭐ Support
 
 If you enjoy Aika, consider giving this repository a ⭐ on GitHub.
@@ -137,3 +123,5 @@ If you enjoy Aika, consider giving this repository a ⭐ on GitHub.
 © 2026 Aika 2.1
 
 **Live:** https://aikalabs.lovable.app
+
+🌸 Made By ArcMint inc.
