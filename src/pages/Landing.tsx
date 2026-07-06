@@ -36,7 +36,7 @@ const capabilities = [
 
 const stats = [
   { k: "kimono-zm", v: "The engine" },
-  { k: "4", v: "Modes" },
+  { k: "3", v: "Modes" },
   { k: "∞", v: "Curiosity" },
 ];
 
