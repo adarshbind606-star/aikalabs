@@ -27,12 +27,6 @@ const capabilities = [
     body: "Describe a dream. Watch it render in seconds. Download, share, or iterate — no gatekeeping.",
   },
   {
-    tag: "03",
-    icon: Code2,
-    title: "KawaiiCode, your pair",
-    body: "A coding companion tuned for craft. Snippets, refactors, and explanations delivered with taste.",
-  },
-  {
     tag: "04",
     icon: Flame,
     title: "AikaUnbound",
