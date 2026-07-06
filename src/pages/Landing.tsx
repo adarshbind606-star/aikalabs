@@ -6,7 +6,6 @@ import {
   MessageCircle,
   Image as ImageIcon,
   Flame,
-  Code2,
   Sparkles,
   ArrowUpRight,
   Moon,
