@@ -1,0 +1,2 @@
+ALTER TABLE public.conversations DROP CONSTRAINT IF EXISTS conversations_mode_check;
+ALTER TABLE public.conversations ADD CONSTRAINT conversations_mode_check CHECK (mode IN ('aika', 'unbound', 'comet'));
