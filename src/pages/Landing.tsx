@@ -161,7 +161,7 @@ export default function Landing() {
         <div className="mb-12 flex items-end justify-between gap-4">
           <div>
             <div className="text-xs uppercase tracking-[0.24em] text-muted-foreground">§ Capabilities</div>
-            <h2 className="mt-3 font-display text-4xl md:text-6xl">Three ways to think<br /><span className="font-italic-serif text-primary">together</span>.</h2>
+            <h2 className="mt-3 font-display text-4xl md:text-6xl">Four ways to think<br /><span className="font-italic-serif text-primary">together</span>.</h2>
           </div>
           <Sparkles className="hidden h-8 w-8 text-accent md:block" strokeWidth={1.25} />
         </div>
@@ -263,6 +263,7 @@ export default function Landing() {
           <div className="flex gap-6">
             <Link to="/chat" className="hover:text-foreground">Chat</Link>
             <Link to="/image-gen" className="hover:text-foreground">Images</Link>
+            <Link to="/comet" className="hover:text-foreground">Comet</Link>
             <Link to="/unbound" className="hover:text-foreground">Unbound</Link>
             <Link to="/settings" className="hover:text-foreground">Settings</Link>
           </div>
