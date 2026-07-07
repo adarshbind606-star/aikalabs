@@ -226,7 +226,7 @@ export default function Comet() {
             desktopHidden={desktopSidebarHidden}
             onDesktopToggle={() => setDesktopSidebarHidden((v) => !v)}
           />
-          <CometLogo size={28} />
+          <CometLogo size={44} />
           <h2 className="font-display text-lg bg-gradient-to-r from-sky-300 to-violet-300 bg-clip-text text-transparent">Comet</h2>
           <span className="rounded-full border border-sky-400/40 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-sky-300">
             comet-glm
@@ -254,7 +254,7 @@ export default function Comet() {
           <div className="flex flex-1 flex-col items-center justify-center gap-5 p-8">
             <div className="relative">
               <div className="absolute -inset-6 rounded-full bg-gradient-to-br from-sky-500/25 to-violet-500/25 blur-3xl" />
-              <CometLogo size={96} className="comet-lg relative" />
+              <CometLogo size={160} className="comet-lg relative" />
             </div>
             <h2 className="font-display text-3xl bg-gradient-to-r from-sky-300 via-fuchsia-300 to-violet-300 bg-clip-text text-transparent">
               Comet is ready to build.
