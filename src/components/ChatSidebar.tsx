@@ -157,7 +157,7 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
             variant="outline"
             size="sm"
           >
-            <CometLogo size={18} className="shrink-0" />
+            <CometLogo size={22} className="shrink-0" />
             <span className="truncate text-xs font-semibold tracking-wide">Comet · Build</span>
           </Button>
         </div>
