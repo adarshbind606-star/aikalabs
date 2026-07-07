@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame, Sparkles } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame } from "lucide-react";
+import { CometLogo } from "@/components/CometLogo";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -156,7 +157,7 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
             variant="outline"
             size="sm"
           >
-            <Sparkles className="h-4 w-4 shrink-0" />
+            <CometLogo size={18} className="shrink-0" />
             <span className="truncate text-xs font-semibold tracking-wide">Comet · Build</span>
           </Button>
         </div>
