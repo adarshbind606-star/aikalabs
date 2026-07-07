@@ -149,23 +149,32 @@
   }
 }
 
-/* Sakura petal animation */
+/* Sakura petal animation — GPU-composited for smooth 60fps */
 @keyframes petal-fall {
   0% {
-    transform: translateY(-10vh) translateX(0) rotate(0deg);
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
     opacity: 1;
   }
   100% {
-    transform: translateY(110vh) translateX(100px) rotate(720deg);
+    transform: translate3d(100px, 110vh, 0) rotate(720deg);
     opacity: 0;
   }
 }
 
 .petal {
   position: fixed;
+  top: 0;
   pointer-events: none;
   z-index: 0;
-  animation: petal-fall linear forwards;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
+  animation: petal-fall linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal { animation: none; opacity: 0 !important; }
 }
 
 /* Markdown styles */
