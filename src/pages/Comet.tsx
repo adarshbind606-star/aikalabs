@@ -7,7 +7,8 @@ import { ChatMessage, ThinkingIndicator } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Share2, Download, Code2, Zap } from "lucide-react";
+import { Share2, Download, Code2, Zap, Sparkles, Terminal, GitBranch, Bug } from "lucide-react";
+import { CometLogo } from "@/components/CometLogo";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -225,9 +226,7 @@ export default function Comet() {
             desktopHidden={desktopSidebarHidden}
             onDesktopToggle={() => setDesktopSidebarHidden((v) => !v)}
           />
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-violet-500 shadow-[0_0_18px_hsl(200_90%_60%/0.55)]">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
+          <CometLogo size={28} />
           <h2 className="font-display text-lg bg-gradient-to-r from-sky-300 to-violet-300 bg-clip-text text-transparent">Comet</h2>
           <span className="rounded-full border border-sky-400/40 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-sky-300">
             comet-glm
@@ -254,23 +253,23 @@ export default function Comet() {
         {!activeConvoId && messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-5 p-8">
             <div className="relative">
-              <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-sky-500/30 to-violet-500/30 blur-2xl" />
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-violet-500 shadow-[0_0_40px_hsl(200_90%_60%/0.5)]">
-                <Sparkles className="h-10 w-10 text-white" strokeWidth={1.5} />
-              </div>
+              <div className="absolute -inset-6 rounded-full bg-gradient-to-br from-sky-500/25 to-violet-500/25 blur-3xl" />
+              <CometLogo size={96} className="comet-lg relative" />
             </div>
             <h2 className="font-display text-3xl bg-gradient-to-r from-sky-300 via-fuchsia-300 to-violet-300 bg-clip-text text-transparent">
               Comet is ready to build.
             </h2>
             <p className="max-w-md text-center text-muted-foreground">
-              A GLM-family model tuned for software. Ship code, design systems, debug fast — like z.ai or Codex, but yours.
+              A GLM-family agent for shipping software. Scaffold projects, refactor at scale, debug root causes, design APIs — end to end.
             </p>
             <div className="grid w-full max-w-xl grid-cols-1 gap-3 sm:grid-cols-2">
               {[
-                { icon: Code2, title: "Write a React component", body: "for a pricing table" },
-                { icon: Zap, title: "Debug this error", body: "and explain the root cause" },
-                { icon: Code2, title: "Design a REST API", body: "for a todo app in Node" },
-                { icon: Sparkles, title: "Refactor this function", body: "to be idiomatic TypeScript" },
+                { icon: Code2, title: "Scaffold a full-stack app", body: "Next.js + Postgres + auth, file tree included" },
+                { icon: Bug, title: "Diagnose a failing test", body: "root cause, patch, and regression guard" },
+                { icon: GitBranch, title: "Plan a refactor", body: "step-by-step diff plan across files" },
+                { icon: Terminal, title: "Write a shell one-liner", body: "explain each flag" },
+                { icon: Zap, title: "Optimize this SQL query", body: "with an EXPLAIN walkthrough" },
+                { icon: Sparkles, title: "Design a REST + webhook API", body: "schemas, errors, idempotency keys" },
               ].map((s) => (
                 <button
                   key={s.title}
