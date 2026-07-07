@@ -186,3 +186,26 @@
 .font-size-small .chat-text { font-size: 0.8125rem; line-height: 1.4; }
 .font-size-medium .chat-text { font-size: 0.875rem; line-height: 1.5; }
 .font-size-large .chat-text { font-size: 1rem; line-height: 1.6; }
+
+/* Comet logo — animated nucleus + tail */
+.comet-logo { filter: drop-shadow(0 0 12px hsl(200 90% 60% / 0.55)); }
+.comet-logo .comet-orbit {
+  animation: comet-drift 3.6s ease-in-out infinite;
+  transform-box: fill-box;
+}
+.comet-logo .comet-spark {
+  animation: comet-spark 1.4s ease-in-out infinite;
+}
+.comet-logo .spark-2 { animation-delay: 0.25s; }
+.comet-logo .spark-3 { animation-delay: 0.5s; }
+
+@keyframes comet-drift {
+  0%   { transform: translate(-2px, 1px) rotate(-4deg); }
+  50%  { transform: translate(2px, -1px) rotate(4deg); }
+  100% { transform: translate(-2px, 1px) rotate(-4deg); }
+}
+@keyframes comet-spark {
+  0%, 100% { opacity: 0.2; transform: translateX(0); }
+  50%      { opacity: 1;   transform: translateX(-3px); }
+}
+.comet-logo.comet-lg { filter: drop-shadow(0 0 28px hsl(200 90% 60% / 0.7)) drop-shadow(0 0 60px hsl(260 80% 60% / 0.35)); }

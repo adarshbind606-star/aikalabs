@@ -30,7 +30,7 @@ const capabilities = [
     tag: "03",
     icon: Sparkles,
     title: "Comet, your build agent",
-    body: "A GLM-family coding model tuned for shipping. Write apps, debug fast, design systems — think z.ai or Codex, but yours.",
+    body: "A GLM-family build agent. Scaffold projects, refactor at scale, debug root causes, and design APIs — end to end.",
   },
   {
     tag: "04",
