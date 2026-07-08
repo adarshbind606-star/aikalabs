@@ -13,6 +13,7 @@ import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 import Unbound from "./pages/Unbound";
 import Comet from "./pages/Comet";
+import Pricing from "./pages/Pricing";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/settings" element={<Settings />} />
               <Route path="/unbound" element={<Unbound />} />
               <Route path="/comet" element={<Comet />} />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
