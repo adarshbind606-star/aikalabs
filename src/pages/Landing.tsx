@@ -59,6 +59,7 @@ export default function Landing() {
         </Link>
         <div className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
           <a href="#capabilities" className="transition-colors hover:text-foreground">Capabilities</a>
+          <Link to="/pricing" className="transition-colors hover:text-foreground">Pricing</Link>
           <a href="#manifesto" className="transition-colors hover:text-foreground">Manifesto</a>
           <a href="#unbound" className="transition-colors hover:text-foreground">Unbound</a>
         </div>
@@ -265,6 +266,7 @@ export default function Landing() {
             <Link to="/image-gen" className="hover:text-foreground">Images</Link>
             <Link to="/comet" className="hover:text-foreground">Comet</Link>
             <Link to="/unbound" className="hover:text-foreground">Unbound</Link>
+            <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
             <Link to="/settings" className="hover:text-foreground">Settings</Link>
           </div>
           <div className="text-xs">© 2026 · Aika 2.1</div>
