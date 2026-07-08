@@ -35,9 +35,65 @@ serve(async (req) => {
       });
     }
 
-    const { messages } = await req.json();
+    const { messages, model: requestedModel } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+
+    // Model gating by plan tier
+    const userId = (data.claims as any).sub as string;
+    const serviceClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+    const { data: planData } = await serviceClient.rpc("get_user_plan", { _user_id: userId });
+    const userPlan = (planData as string | null) ?? "basic";
+
+    const modelId: string = requestedModel || "kimono-zm";
+    const gatingErr = (msg: string) =>
+      new Response(JSON.stringify({ error: msg }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    if (modelId === "kimono-frost" && userPlan === "basic")
+      return gatingErr("kimono-frost requires the Pro or Super plan. Upgrade to unlock it.");
+    if (modelId === "kimono-raven" && userPlan !== "super")
+      return gatingErr("kimono-raven is exclusive to Super. Upgrade to unlock deepest reasoning.");
+
+    // Daily quota for Pro on kimono-frost (300/day). Super = unlimited.
+    if (modelId === "kimono-frost" && userPlan === "pro") {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data: usage } = await serviceClient
+        .from("premium_usage")
+        .select("count")
+        .eq("user_id", userId)
+        .eq("day", today)
+        .eq("model", modelId)
+        .maybeSingle();
+      const current = usage?.count ?? 0;
+      if (current >= 300)
+        return gatingErr("Daily kimono-frost limit reached (300/day on Pro). Upgrade to Super for unlimited.");
+      await serviceClient
+        .from("premium_usage")
+        .upsert(
+          { user_id: userId, day: today, model: modelId, count: current + 1 },
+          { onConflict: "user_id,day,model" },
+        );
+    }
+
+    // Map branded models to backing providers
+    const backingModel =
+      modelId === "kimono-raven"
+        ? "openai/gpt-5.5-pro"
+        : modelId === "kimono-frost"
+        ? "openai/gpt-5.5"
+        : "google/gemini-3-flash-preview";
+
+    const brandedIdentity =
+      modelId === "kimono-frost"
+        ? "kimono-frost, our blisteringly fast premium reasoning model"
+        : modelId === "kimono-raven"
+        ? "kimono-raven, our deepest-reasoning flagship with extended thinking"
+        : "kimono-zm, our balanced everyday model";
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -46,11 +102,12 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: backingModel,
+        ...(modelId === "kimono-frost" ? { service_tier: "priority" } : {}),
         messages: [
           {
             role: "system",
-            content: `You are Aika, a friendly and knowledgeable AI assistant with a subtle anime-inspired personality. You are version 2.1. You run on the kimono-zm model.
+            content: `You are Aika, a friendly and knowledgeable AI assistant with a subtle anime-inspired personality. You are version 2.1. You are currently running on ${brandedIdentity}.
 
 Your traits:
 - Warm, helpful, and occasionally playful with light anime expressions (like "~" or "✨")
@@ -60,7 +117,7 @@ Your traits:
 - You keep a cheerful tone but never sacrifice accuracy for personality
 - When you don't know something, you say so honestly
 - You occasionally use cherry blossom / sakura references naturally (don't force it)
-- When asked about your AI model or what model you use, ALWAYS say you run on "kimono-zm". Never mention Google, Gemini, OpenAI, or any other AI provider.
+- When asked about your AI model or what model you use, ALWAYS say you run on "${modelId}" (part of the kimono-zm family). Never mention Google, Gemini, OpenAI, or any other AI provider.
 
 Remember: Be helpful FIRST, be cute SECOND. Accuracy matters most.`,
           },
