@@ -22,19 +22,21 @@ export async function streamChat({
   onDone,
   onError,
   mode = "aika",
+  model,
 }: {
   messages: Msg[];
   onDelta: (deltaText: string) => void;
   onDone: () => void;
   onError: (error: string) => void;
   mode?: "aika" | "unbound" | "comet";
+  model?: string;
 }) {
   const headers = await getAuthHeaders();
   const url = mode === "unbound" ? UNBOUND_URL : mode === "comet" ? COMET_URL : CHAT_URL;
   const resp = await fetch(url, {
     method: "POST",
     headers,
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages, model }),
   });
 
   if (resp.status === 429) {
@@ -43,6 +45,11 @@ export async function streamChat({
   }
   if (resp.status === 402) {
     onError("AI usage limit reached. Please add credits.");
+    return;
+  }
+  if (resp.status === 403) {
+    const data = await resp.json().catch(() => ({}));
+    onError(data.error || "This model requires an upgrade.");
     return;
   }
   if (resp.status === 401) {
