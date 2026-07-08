@@ -8,10 +8,13 @@ import { ChatInput } from "@/components/ChatInput";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Cherry, Share2, Download } from "lucide-react";
+import { Cherry, Share2, Download, ChevronDown, Lock, Sparkles } from "lucide-react";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useNavigate } from "react-router-dom";
+import { usePlan, canUseModel } from "@/hooks/usePlan";
+import { CHAT_MODELS, ChatModelId } from "@/lib/models";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,12 +38,15 @@ interface Conversation {
 
 export default function Chat() {
   const { session, user, loading } = useAuth();
+  const { plan } = usePlan();
+  const navigate = useNavigate();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [desktopSidebarHidden, setDesktopSidebarHidden] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<ChatModelId>("kimono-zm");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -144,6 +150,7 @@ export default function Chat() {
 
     await streamChat({
       messages: chatHistory,
+      model: selectedModel,
       onDelta: upsertAssistant,
       onDone: async () => {
         setIsStreaming(false);
@@ -156,7 +163,7 @@ export default function Chat() {
         toast.error(err);
       },
     });
-  }, [user]);
+  }, [user, selectedModel]);
 
   const handleSend = useCallback(async (input: string, imageBase64?: string) => {
     if (!user || isStreaming) return;
@@ -265,6 +272,50 @@ export default function Chat() {
           />
           <Cherry className="h-5 w-5 text-primary" />
           <h2 className="font-display text-lg text-primary">Aika-AI 2.1</h2>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="ml-2 h-8 gap-1.5 rounded-full">
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <span className="font-mono text-xs">{selectedModel}</span>
+                <ChevronDown className="h-3.5 w-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-72">
+              {CHAT_MODELS.map((m) => {
+                const locked = !canUseModel(plan, m.id);
+                return (
+                  <DropdownMenuItem
+                    key={m.id}
+                    onClick={() => {
+                      if (locked) {
+                        navigate("/pricing");
+                        return;
+                      }
+                      setSelectedModel(m.id);
+                    }}
+                    className="flex flex-col items-start gap-0.5 py-2"
+                  >
+                    <div className="flex w-full items-center gap-2">
+                      <span className="font-mono text-sm">{m.label}</span>
+                      {m.badge && (
+                        <span className="ml-auto rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-primary">
+                          {m.badge}
+                        </span>
+                      )}
+                      {locked && <Lock className="h-3 w-3 text-muted-foreground" />}
+                    </div>
+                    <span className="text-xs text-muted-foreground">{m.tagline}</span>
+                  </DropdownMenuItem>
+                );
+              })}
+              <DropdownMenuItem
+                onClick={() => navigate("/pricing")}
+                className="mt-1 justify-center border-t border-border text-xs text-primary"
+              >
+                Compare plans →
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <div className="ml-auto">
             {activeConvoId && messages.length > 0 && (
               <DropdownMenu>
