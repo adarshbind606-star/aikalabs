@@ -195,6 +195,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      consume_model_quota: {
+        Args: { _limit?: number; _model: string }
+        Returns: {
+          allowed: boolean
+          remaining: number
+          used: number
+        }[]
+      }
+      get_model_usage: {
+        Args: { _limit?: number; _model: string }
+        Returns: {
+          remaining: number
+          used: number
+        }[]
+      }
       get_user_plan: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["plan_tier"]
