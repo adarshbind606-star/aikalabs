@@ -6,6 +6,7 @@ type Msg = { role: "user" | "assistant"; content: MsgContent };
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 const UNBOUND_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-unbound`;
 const COMET_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/comet`;
+const KIMONO_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/kimono`;
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
   const { data: { session } } = await supabase.auth.getSession();
@@ -22,23 +23,30 @@ export async function streamChat({
   onDone,
   onError,
   mode = "aika",
+  signal,
+  onMeta,
 }: {
   messages: Msg[];
   onDelta: (deltaText: string) => void;
   onDone: () => void;
   onError: (error: string) => void;
-  mode?: "aika" | "unbound" | "comet";
+  mode?: "aika" | "unbound" | "comet" | "raven" | "frost";
+  signal?: AbortSignal;
+  onMeta?: (meta: { remaining?: number }) => void;
 }) {
   const headers = await getAuthHeaders();
-  const url = mode === "unbound" ? UNBOUND_URL : mode === "comet" ? COMET_URL : CHAT_URL;
+  const isKimono = mode === "raven" || mode === "frost";
+  const url = mode === "unbound" ? UNBOUND_URL : mode === "comet" ? COMET_URL : isKimono ? KIMONO_URL : CHAT_URL;
   const resp = await fetch(url, {
     method: "POST",
     headers,
-    body: JSON.stringify({ messages }),
+    signal,
+    body: JSON.stringify(isKimono ? { messages, variant: mode } : { messages }),
   });
 
   if (resp.status === 429) {
-    onError("Rate limit exceeded. Please wait a moment and try again.");
+    const data = await resp.json().catch(() => ({}));
+    onError(data.error || "Rate limit exceeded. Please wait a moment and try again.");
     return;
   }
   if (resp.status === 402) {
@@ -53,6 +61,9 @@ export async function streamChat({
     onError("Failed to get a response from Aika.");
     return;
   }
+
+  const remainingHeader = resp.headers.get("X-Quota-Remaining");
+  if (remainingHeader !== null) onMeta?.({ remaining: Number(remainingHeader) });
 
   const reader = resp.body.getReader();
   const decoder = new TextDecoder();
