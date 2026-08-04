@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame, Sparkles } from "lucide-react";
 import { CometLogo } from "@/components/CometLogo";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,7 +27,7 @@ interface ChatSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   desktopHidden?: boolean;
-  activePage?: "chat" | "image" | "settings" | "unbound" | "comet";
+  activePage?: "chat" | "image" | "settings" | "unbound" | "comet" | "kimono";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -162,11 +162,26 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </Button>
         </div>
 
-        {(activePage === "chat" || activePage === "unbound" || activePage === "comet") && (
+        <div className="border-b border-sidebar-border p-2">
+          <Button
+            onClick={() => { navigate("/kimono"); onClose(); }}
+            className={cn(
+              "w-full gap-2 border-violet-400/40 text-violet-300 hover:bg-violet-400/10 hover:text-violet-200",
+              activePage === "kimono" && "bg-violet-400/15 text-violet-200"
+            )}
+            variant="outline"
+            size="sm"
+          >
+            <Sparkles className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs font-semibold tracking-wide">Kimono Labs · Raven & Frost</span>
+          </Button>
+        </div>
+
+        {(activePage === "chat" || activePage === "unbound" || activePage === "comet" || activePage === "kimono") && (
           <>
             <div className="p-3">
               <Button onClick={onNew} className="w-full gap-2" variant="outline">
-                <Plus className="h-4 w-4" /> {activePage === "unbound" ? "New Unbound Chat" : activePage === "comet" ? "New Comet Session" : "New Chat"}
+                <Plus className="h-4 w-4" /> {activePage === "unbound" ? "New Unbound Chat" : activePage === "comet" ? "New Comet Session" : activePage === "kimono" ? "New Kimono Thread" : "New Chat"}
               </Button>
             </div>
 

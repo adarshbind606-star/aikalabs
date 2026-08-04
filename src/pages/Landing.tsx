@@ -38,11 +38,17 @@ const capabilities = [
     title: "AikaUnbound",
     body: "Her uncensored counterpart. Direct answers, zero lectures, unfiltered clarity on anything you ask.",
   },
+  {
+    tag: "05",
+    icon: Sparkles,
+    title: "Kimono Labs — Raven & Frost",
+    body: "Two flagship minds, free every day. kimono-raven goes deep on the hard problems; kimono-frost answers instantly with crystal clarity. 100 messages a day on each.",
+  },
 ];
 
 const stats = [
   { k: "kimono-zm", v: "The engine" },
-  { k: "4", v: "Modes" },
+  { k: "6", v: "Modes" },
   { k: "∞", v: "Curiosity" },
 ];
 
@@ -161,7 +167,7 @@ export default function Landing() {
         <div className="mb-12 flex items-end justify-between gap-4">
           <div>
             <div className="text-xs uppercase tracking-[0.24em] text-muted-foreground">§ Capabilities</div>
-            <h2 className="mt-3 font-display text-4xl md:text-6xl">Four ways to think<br /><span className="font-italic-serif text-primary">together</span>.</h2>
+            <h2 className="mt-3 font-display text-4xl md:text-6xl">Five ways to think<br /><span className="font-italic-serif text-primary">together</span>.</h2>
           </div>
           <Sparkles className="hidden h-8 w-8 text-accent md:block" strokeWidth={1.25} />
         </div>
