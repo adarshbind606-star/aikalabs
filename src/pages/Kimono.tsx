@@ -295,8 +295,24 @@ export default function Kimono() {
   const usedPct = remaining === null ? 0 : ((DAILY_LIMIT - remaining) / DAILY_LIMIT) * 100;
 
   return (
-    <div className="relative flex h-screen overflow-hidden bg-background">
-      <div className={cn("pointer-events-none absolute inset-0 transition-opacity duration-500", meta.glow)} />
+    <div className={cn("kimono-theme relative flex h-screen overflow-hidden bg-background", meta.theme)}>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="kimono-aurora" />
+        <div className="kimono-beam" />
+        {Array.from({ length: 14 }).map((_, i) => (
+          <span
+            key={`${variant}-${i}`}
+            className="kimono-particle"
+            style={{
+              left: `${(i * 7.3) % 100}%`,
+              width: variant === "raven" ? 6 : 4,
+              height: variant === "raven" ? 10 : 4,
+              animationDuration: `${9 + (i % 6) * 2.5}s`,
+              animationDelay: `${(i % 8) * 1.3}s`,
+            }}
+          />
+        ))}
+      </div>
       <ChatSidebar
         conversations={conversations}
         activeId={activeConvoId}
