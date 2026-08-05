@@ -11,9 +11,12 @@ interface ChatMessageProps {
   imageUrl?: string | null;
   onEdit?: (newContent: string) => void;
   onResend?: () => void;
+  /** Optional animated mascot image used as the assistant avatar */
+  avatar?: string;
+  avatarAlt?: string;
 }
 
-export function ChatMessage({ role, content, imageUrl, onEdit, onResend }: ChatMessageProps) {
+export function ChatMessage({ role, content, imageUrl, onEdit, onResend, avatar, avatarAlt }: ChatMessageProps) {
   const isUser = role === "user";
   const [fontSize, setFontSize] = useState("medium");
   const [isEditing, setIsEditing] = useState(false);
@@ -47,16 +50,20 @@ export function ChatMessage({ role, content, imageUrl, onEdit, onResend }: ChatM
   };
 
   return (
-    <div className={cn("group flex gap-3 px-4 py-4", `font-size-${fontSize}`, isUser ? "justify-end" : "justify-start")}>
+    <div className={cn("group flex gap-2 px-2 py-3 sm:gap-3 sm:px-4 sm:py-4", `font-size-${fontSize}`, isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
-          <Cherry className="h-5 w-5 text-primary" />
+        <div className="mascot-avatar flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary/30 bg-primary/10">
+          {avatar ? (
+            <img src={avatar} alt={avatarAlt || "Assistant mascot"} loading="lazy" className="h-full w-full object-cover object-top" />
+          ) : (
+            <Cherry className="h-5 w-5 text-primary" />
+          )}
         </div>
       )}
-      <div className="flex flex-col gap-1 max-w-[75%]">
+      <div className="flex min-w-0 flex-col gap-1 max-w-[85%] sm:max-w-[75%]">
         <div
           className={cn(
-            "rounded-2xl px-4 py-3 chat-text",
+            "overflow-hidden break-words rounded-2xl px-3 py-2.5 chat-text sm:px-4 sm:py-3",
             isUser
               ? "bg-primary text-primary-foreground rounded-br-md"
               : "bg-card border border-border rounded-bl-md"
@@ -103,7 +110,7 @@ export function ChatMessage({ role, content, imageUrl, onEdit, onResend }: ChatM
                           variant="secondary"
                           size="sm"
                           onClick={() => handleCopyCode(codeText)}
-                          className="absolute right-2 top-2 h-7 px-2 opacity-0 group-hover/code:opacity-100 transition-opacity z-10"
+                          className="absolute right-2 top-2 z-10 h-7 px-2 opacity-100 transition-opacity md:opacity-0 md:group-hover/code:opacity-100"
                           title="Copy code"
                         >
                           <Copy className="h-3 w-3 mr-1" />
@@ -144,7 +151,7 @@ export function ChatMessage({ role, content, imageUrl, onEdit, onResend }: ChatM
           )}
         </div>
         {!isEditing && (
-          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
             {isUser && onEdit && (
               <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setIsEditing(true)} title="Edit">
                 <Pencil className="h-3 w-3" />
@@ -164,7 +171,7 @@ export function ChatMessage({ role, content, imageUrl, onEdit, onResend }: ChatM
         )}
       </div>
       {isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary">
+        <div className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary sm:flex">
           <User className="h-5 w-5 text-secondary-foreground" />
         </div>
       )}
@@ -172,14 +179,18 @@ export function ChatMessage({ role, content, imageUrl, onEdit, onResend }: ChatM
   );
 }
 
-export function ThinkingIndicator() {
+export function ThinkingIndicator({ avatar, name = "Aika" }: { avatar?: string; name?: string }) {
   return (
-    <div className="flex gap-3 px-4 py-4">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
-        <Cherry className="h-5 w-5 text-primary animate-pulse" />
+    <div className="flex gap-2 px-2 py-3 sm:gap-3 sm:px-4 sm:py-4">
+      <div className="mascot-avatar mascot-avatar-active flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary/30 bg-primary/10">
+        {avatar ? (
+          <img src={avatar} alt={`${name} mascot`} loading="lazy" className="h-full w-full object-cover object-top" />
+        ) : (
+          <Cherry className="h-5 w-5 text-primary animate-pulse" />
+        )}
       </div>
       <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-border bg-card px-4 py-3">
-        <span className="text-sm text-muted-foreground italic">Aika is thinking</span>
+        <span className="text-sm text-muted-foreground italic">{name} is thinking</span>
         <span className="flex gap-0.5">
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary" style={{ animationDelay: "0ms" }} />
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary" style={{ animationDelay: "150ms" }} />
