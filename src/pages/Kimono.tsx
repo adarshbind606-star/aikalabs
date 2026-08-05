@@ -486,7 +486,11 @@ export default function Kimono() {
           </div>
         )}
 
-        <ChatInput onSend={handleSend} disabled={isStreaming || remaining === 0} />
+        <ChatInput
+          onSend={handleSend}
+          disabled={isStreaming || remaining === 0}
+          placeholder={remaining === 0 ? "Daily limit reached — resets 00:00 UTC" : `Ask ${meta.name} anything...`}
+        />
       </div>
     </div>
   );
