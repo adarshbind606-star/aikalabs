@@ -403,12 +403,17 @@ export default function Kimono() {
         <ScrollArea className="flex-1">
           <div className="mx-auto max-w-3xl px-4 py-6">
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center gap-6 py-10 text-center">
-                <div className={cn(
-                  "flex h-20 w-20 items-center justify-center rounded-2xl border",
-                  variant === "raven" ? "border-violet-400/40 bg-violet-400/10" : "border-cyan-400/40 bg-cyan-400/10"
-                )}>
-                  <Icon className={cn("h-10 w-10", variant === "raven" ? "text-violet-300" : "text-cyan-200")} />
+              <div key={variant} className="kimono-swap flex flex-col items-center gap-6 py-10 text-center">
+                <img
+                  src={meta.mascot}
+                  alt={`${meta.name} anime mascot`}
+                  width={768}
+                  height={1024}
+                  loading="lazy"
+                  className="kimono-mascot h-52 w-auto sm:h-72"
+                />
+                <div className="kimono-pulse-ring flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/40 bg-primary/10">
+                  <Icon className="h-8 w-8 text-primary" />
                 </div>
                 <div>
                   <h3 className={cn("font-display text-3xl bg-gradient-to-r bg-clip-text text-transparent", meta.accent)}>
