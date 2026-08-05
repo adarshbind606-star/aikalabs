@@ -12,6 +12,8 @@ import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import ravenMascot from "@/assets/raven-mascot.png";
+import frostMascot from "@/assets/frost-mascot.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +34,8 @@ const VARIANTS: Record<Variant, {
   chip: string;
   glow: string;
   ring: string;
+  mascot: string;
+  theme: string;
   prompts: string[];
 }> = {
   raven: {
@@ -43,6 +47,8 @@ const VARIANTS: Record<Variant, {
     chip: "border-violet-400/40 bg-violet-400/10 text-violet-200",
     glow: "bg-[radial-gradient(ellipse_at_top,hsl(270_85%_60%/0.16),transparent_60%),radial-gradient(ellipse_at_bottom_left,hsl(300_70%_55%/0.12),transparent_55%)]",
     ring: "border-violet-400/40 hover:bg-violet-400/10 text-violet-200",
+    mascot: ravenMascot,
+    theme: "kimono-raven",
     prompts: [
       "Design a fault-tolerant event pipeline for 50k events/sec and justify every trade-off.",
       "Prove or disprove: every bounded sequence has a convergent subsequence.",
@@ -59,6 +65,8 @@ const VARIANTS: Record<Variant, {
     chip: "border-cyan-400/40 bg-cyan-400/10 text-cyan-200",
     glow: "bg-[radial-gradient(ellipse_at_top,hsl(190_90%_60%/0.16),transparent_60%),radial-gradient(ellipse_at_bottom_right,hsl(170_75%_55%/0.12),transparent_55%)]",
     ring: "border-cyan-400/40 hover:bg-cyan-400/10 text-cyan-200",
+    mascot: frostMascot,
+    theme: "kimono-frost",
     prompts: [
       "Explain vector databases in 150 words with one table.",
       "Summarize this into 5 bullets and a next-action list.",
@@ -287,8 +295,24 @@ export default function Kimono() {
   const usedPct = remaining === null ? 0 : ((DAILY_LIMIT - remaining) / DAILY_LIMIT) * 100;
 
   return (
-    <div className="relative flex h-screen overflow-hidden bg-background">
-      <div className={cn("pointer-events-none absolute inset-0 transition-opacity duration-500", meta.glow)} />
+    <div className={cn("kimono-theme relative flex h-screen overflow-hidden bg-background", meta.theme)}>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="kimono-aurora" />
+        <div className="kimono-beam" />
+        {Array.from({ length: 14 }).map((_, i) => (
+          <span
+            key={`${variant}-${i}`}
+            className="kimono-particle"
+            style={{
+              left: `${(i * 7.3) % 100}%`,
+              width: variant === "raven" ? 6 : 4,
+              height: variant === "raven" ? 10 : 4,
+              animationDuration: `${9 + (i % 6) * 2.5}s`,
+              animationDelay: `${(i % 8) * 1.3}s`,
+            }}
+          />
+        ))}
+      </div>
       <ChatSidebar
         conversations={conversations}
         activeId={activeConvoId}
@@ -379,12 +403,17 @@ export default function Kimono() {
         <ScrollArea className="flex-1">
           <div className="mx-auto max-w-3xl px-4 py-6">
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center gap-6 py-10 text-center">
-                <div className={cn(
-                  "flex h-20 w-20 items-center justify-center rounded-2xl border",
-                  variant === "raven" ? "border-violet-400/40 bg-violet-400/10" : "border-cyan-400/40 bg-cyan-400/10"
-                )}>
-                  <Icon className={cn("h-10 w-10", variant === "raven" ? "text-violet-300" : "text-cyan-200")} />
+              <div key={variant} className="kimono-swap flex flex-col items-center gap-6 py-10 text-center">
+                <img
+                  src={meta.mascot}
+                  alt={`${meta.name} anime mascot`}
+                  width={768}
+                  height={1024}
+                  loading="lazy"
+                  className="kimono-mascot h-52 w-auto sm:h-72"
+                />
+                <div className="kimono-pulse-ring flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/40 bg-primary/10">
+                  <Icon className="h-8 w-8 text-primary" />
                 </div>
                 <div>
                   <h3 className={cn("font-display text-3xl bg-gradient-to-r bg-clip-text text-transparent", meta.accent)}>
