@@ -337,6 +337,32 @@
   50%      { box-shadow: 0 0 0 14px hsl(var(--kimono-a) / 0); }
 }
 
+/* Animated mascot avatars in chat */
+.mascot-avatar {
+  animation: mascot-bob 4.5s ease-in-out infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+@keyframes mascot-bob {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1.5deg); }
+  50%      { transform: translate3d(0, -3px, 0) rotate(1.5deg); }
+}
+.mascot-avatar-active {
+  animation: mascot-bob 1.6s ease-in-out infinite, mascot-glow 2.2s ease-in-out infinite;
+}
+@keyframes mascot-glow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.45); }
+  50%      { box-shadow: 0 0 0 8px hsl(var(--primary) / 0); }
+}
+
+/* Floating chat companion mascot */
+.mascot-companion {
+  animation: kimono-float 8s ease-in-out infinite;
+  filter: drop-shadow(0 14px 40px hsl(var(--kimono-a, var(--primary)) / 0.45));
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .kimono-aurora, .kimono-beam::before, .kimono-particle, .kimono-mascot, .kimono-pulse-ring { animation: none; }
+  .kimono-aurora, .kimono-beam::before, .kimono-particle, .kimono-mascot, .kimono-pulse-ring,
+  .mascot-avatar, .mascot-avatar-active, .mascot-companion { animation: none; }
 }
