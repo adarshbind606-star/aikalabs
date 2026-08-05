@@ -326,25 +326,31 @@ export default function Kimono() {
       />
 
       <div className="relative z-10 flex flex-1 flex-col">
-        <header className="flex flex-wrap items-center gap-3 border-b border-border bg-background/70 px-4 py-3 backdrop-blur-md">
+        <header className="flex flex-wrap items-center gap-2 border-b border-border bg-background/70 px-3 py-2.5 backdrop-blur-md sm:gap-3 sm:px-4 sm:py-3">
           <SidebarToggle
             mobileOpen={sidebarOpen}
             onMobileToggle={() => setSidebarOpen((v) => !v)}
             desktopHidden={desktopSidebarHidden}
             onDesktopToggle={() => setDesktopSidebarHidden((v) => !v)}
           />
-          <Icon className={cn("h-6 w-6", variant === "raven" ? "text-violet-300" : "text-cyan-200")} />
-          <h2 className={cn("font-display text-lg bg-gradient-to-r bg-clip-text text-transparent", meta.accent)}>
+          <img
+            src={meta.mascot}
+            alt={`${meta.name} mascot`}
+            loading="lazy"
+            className="mascot-avatar h-8 w-8 shrink-0 rounded-full border border-primary/30 object-cover object-top"
+          />
+          <h2 className={cn("font-display text-base bg-gradient-to-r bg-clip-text text-transparent sm:text-lg", meta.accent)}>
             Kimono Labs
           </h2>
-          <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider", meta.chip)}>
+          <span className={cn("hidden rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider sm:inline", meta.chip)}>
             {meta.name}
           </span>
           <span className="rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-300">
             Free
           </span>
 
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto flex items-center gap-2 sm:gap-3">
+            <span className="text-[10px] text-muted-foreground sm:hidden">{remaining ?? "–"}/{DAILY_LIMIT}</span>
             <div className="hidden min-w-[140px] sm:block">
               <div className="mb-1 flex items-center justify-between text-[10px] text-muted-foreground">
                 <span className="flex items-center gap-1"><Gauge className="h-3 w-3" /> Today</span>
@@ -371,7 +377,7 @@ export default function Kimono() {
           </div>
         </header>
 
-        <div className="flex gap-2 border-b border-border bg-background/50 px-4 py-2 backdrop-blur-sm">
+        <div className="flex gap-2 border-b border-border bg-background/50 px-3 py-2 backdrop-blur-sm sm:px-4">
           {(Object.keys(VARIANTS) as Variant[]).map((v) => {
             const V = VARIANTS[v];
             const VIcon = V.icon;
@@ -401,7 +407,7 @@ export default function Kimono() {
         </div>
 
         <ScrollArea className="flex-1">
-          <div className="mx-auto max-w-3xl px-4 py-6">
+          <div className="mx-auto max-w-3xl px-2 py-4 sm:px-4 sm:py-6">
             {messages.length === 0 ? (
               <div key={variant} className="kimono-swap flex flex-col items-center gap-6 py-10 text-center">
                 <img
@@ -442,17 +448,30 @@ export default function Kimono() {
               </div>
             ) : (
               <>
+                <div className="pointer-events-none fixed bottom-28 right-4 z-20 hidden lg:block">
+                  <img
+                    key={variant}
+                    src={meta.mascot}
+                    alt={`${meta.name} mascot companion`}
+                    loading="lazy"
+                    className="mascot-companion kimono-swap h-44 w-auto opacity-80"
+                  />
+                </div>
                 {messages.map((m, i) => (
                   <ChatMessage
                     key={m.id || i}
                     role={m.role}
                     content={m.content}
                     imageUrl={m.image_url}
+                    avatar={m.role === "assistant" ? meta.mascot : undefined}
+                    avatarAlt={`${meta.name} mascot`}
                     onEdit={m.role === "user" ? (c) => handleEditMessage(i, c) : undefined}
                     onResend={m.role === "user" ? () => handleResendMessage(i) : undefined}
                   />
                 ))}
-                {isStreaming && messages[messages.length - 1]?.role === "user" && <ThinkingIndicator />}
+                {isStreaming && messages[messages.length - 1]?.role === "user" && (
+                  <ThinkingIndicator avatar={meta.mascot} name={meta.name} />
+                )}
               </>
             )}
             <div ref={scrollRef} />
