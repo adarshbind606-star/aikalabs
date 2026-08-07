@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import ravenMascot from "@/assets/raven-mascot.png";
 import frostMascot from "@/assets/frost-mascot.png";
+import { mascotFor, parseMood, stripPartialTag, MOOD_META, type Mood } from "@/lib/kimono-emotion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -100,14 +101,17 @@ export default function Kimono() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [desktopSidebarHidden, setDesktopSidebarHidden] = useState(false);
   const [remaining, setRemaining] = useState<number | null>(null);
+  const [mood, setMood] = useState<Mood>("neutral");
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const meta = VARIANTS[variant];
   const Icon = meta.icon;
+  const face = mascotFor(variant, mood);
+  const moodMeta = MOOD_META[mood];
 
   useEffect(() => { localStorage.setItem("kimono-variant", variant); }, [variant]);
-  useEffect(() => { if (user) { loadConversations(); loadUsage(); setActiveConvoId(null); setMessages([]); } }, [user, variant]);
+  useEffect(() => { if (user) { loadConversations(); loadUsage(); setActiveConvoId(null); setMessages([]); setMood("neutral"); } }, [user, variant]);
   useEffect(() => { if (activeConvoId) loadMessages(activeConvoId); }, [activeConvoId]);
   useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
@@ -132,7 +136,12 @@ export default function Kimono() {
       .select("*")
       .eq("conversation_id", convoId)
       .order("created_at", { ascending: true });
-    if (data) setMessages(data.map(m => ({ id: m.id, role: m.role as "user" | "assistant", content: m.content, image_url: m.image_url })));
+    if (data) {
+      const mapped = data.map(m => ({ id: m.id, role: m.role as "user" | "assistant", content: m.content, image_url: m.image_url }));
+      setMessages(mapped);
+      const lastAssistant = [...mapped].reverse().find(m => m.role === "assistant");
+      setMood(lastAssistant ? parseMood(lastAssistant.content).mood : "neutral");
+    }
   };
 
   const newTitle = () => (variant === "raven" ? "New Raven Thread" : "New Frost Thread");
@@ -147,6 +156,7 @@ export default function Kimono() {
       setConversations(prev => [data, ...prev]);
       setActiveConvoId(data.id);
       setMessages([]);
+      setMood("neutral");
     }
   };
 
@@ -176,6 +186,7 @@ export default function Kimono() {
 
   const streamResponse = useCallback(async (convoId: string, chatMessages: Msg[]) => {
     setIsStreaming(true);
+    setMood("thinking");
     const controller = new AbortController();
     abortRef.current = controller;
     let assistantSoFar = "";
@@ -210,13 +221,19 @@ export default function Kimono() {
         onDelta: upsertAssistant,
         onDone: async () => {
           setIsStreaming(false);
-          if (assistantSoFar) await saveMessage(convoId, { role: "assistant", content: assistantSoFar });
+          if (assistantSoFar) {
+            setMood(parseMood(assistantSoFar).mood);
+            await saveMessage(convoId, { role: "assistant", content: assistantSoFar });
+          } else setMood("neutral");
         },
-        onError: (err) => { setIsStreaming(false); toast.error(err); loadUsage(); },
+        onError: (err) => { setIsStreaming(false); setMood("neutral"); toast.error(err); loadUsage(); },
       });
     } catch {
       setIsStreaming(false);
-      if (assistantSoFar) await saveMessage(convoId, { role: "assistant", content: assistantSoFar });
+      if (assistantSoFar) {
+        setMood(parseMood(assistantSoFar).mood);
+        await saveMessage(convoId, { role: "assistant", content: assistantSoFar });
+      }
     } finally {
       abortRef.current = null;
     }
@@ -269,7 +286,10 @@ export default function Kimono() {
     await streamResponse(activeConvoId, newMessages);
   }, [activeConvoId, user, messages, isStreaming, streamResponse]);
 
-  const transcript = () => messages.map(m => `${m.role === "user" ? "You" : meta.name}: ${m.content}`).join("\n\n");
+  const transcript = () =>
+    messages
+      .map(m => `${m.role === "user" ? "You" : meta.name}: ${m.role === "assistant" ? parseMood(m.content).text : m.content}`)
+      .join("\n\n");
 
   const handleShareChat = () => {
     if (!messages.length) return;
@@ -334,10 +354,10 @@ export default function Kimono() {
             onDesktopToggle={() => setDesktopSidebarHidden((v) => !v)}
           />
           <img
-            src={meta.mascot}
+            src={face}
             alt={`${meta.name} mascot`}
             loading="lazy"
-            className="mascot-avatar h-8 w-8 shrink-0 rounded-full border border-primary/30 object-cover object-top"
+            className={cn("mascot-avatar h-8 w-8 shrink-0 rounded-full border border-primary/30 object-cover object-top", moodMeta.fx)}
           />
           <h2 className={cn("font-display text-base bg-gradient-to-r bg-clip-text text-transparent sm:text-lg", meta.accent)}>
             Kimono Labs
@@ -347,6 +367,13 @@ export default function Kimono() {
           </span>
           <span className="rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-300">
             Free
+          </span>
+          <span
+            key={mood}
+            className={cn("mood-badge hidden rounded-full border px-2 py-0.5 text-[10px] font-medium sm:inline", meta.chip)}
+            title={`${meta.name} is feeling ${moodMeta.label}`}
+          >
+            {moodMeta.emoji} {moodMeta.label}
           </span>
 
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
@@ -411,12 +438,12 @@ export default function Kimono() {
             {messages.length === 0 ? (
               <div key={variant} className="kimono-swap flex flex-col items-center gap-6 py-10 text-center">
                 <img
-                  src={meta.mascot}
+                  src={face}
                   alt={`${meta.name} anime mascot`}
                   width={768}
                   height={1024}
                   loading="lazy"
-                  className="kimono-mascot h-52 w-auto sm:h-72"
+                  className={cn("kimono-mascot h-52 w-auto sm:h-72", moodMeta.fx)}
                 />
                 <div className="kimono-pulse-ring flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/40 bg-primary/10">
                   <Icon className="h-8 w-8 text-primary" />
@@ -448,29 +475,36 @@ export default function Kimono() {
               </div>
             ) : (
               <>
-                <div className="pointer-events-none fixed bottom-28 right-4 z-20 hidden lg:block">
+                <div className="pointer-events-none fixed bottom-28 right-4 z-20 hidden flex-col items-center gap-2 lg:flex">
                   <img
-                    key={variant}
-                    src={meta.mascot}
+                    key={`${variant}-${mood}`}
+                    src={face}
                     alt={`${meta.name} mascot companion`}
                     loading="lazy"
-                    className="mascot-companion kimono-swap h-44 w-auto opacity-80"
+                    className={cn("mascot-companion kimono-swap h-44 w-auto opacity-80", moodMeta.fx)}
                   />
+                  <span className={cn("mood-badge rounded-full border px-2 py-0.5 text-[10px] font-medium backdrop-blur-sm", meta.chip)}>
+                    {moodMeta.emoji} {moodMeta.label}
+                  </span>
                 </div>
-                {messages.map((m, i) => (
-                  <ChatMessage
-                    key={m.id || i}
-                    role={m.role}
-                    content={m.content}
-                    imageUrl={m.image_url}
-                    avatar={m.role === "assistant" ? meta.mascot : undefined}
-                    avatarAlt={`${meta.name} mascot`}
-                    onEdit={m.role === "user" ? (c) => handleEditMessage(i, c) : undefined}
-                    onResend={m.role === "user" ? () => handleResendMessage(i) : undefined}
-                  />
-                ))}
+                {messages.map((m, i) => {
+                  const parsed = m.role === "assistant" ? parseMood(m.content) : null;
+                  return (
+                    <ChatMessage
+                      key={m.id || i}
+                      role={m.role}
+                      content={parsed ? stripPartialTag(parsed.text) : m.content}
+                      imageUrl={m.image_url}
+                      avatar={parsed ? mascotFor(variant, parsed.mood) : undefined}
+                      avatarAlt={`${meta.name} mascot (${MOOD_META[parsed?.mood ?? "neutral"].label})`}
+                      avatarFx={parsed ? MOOD_META[parsed.mood].fx : undefined}
+                      onEdit={m.role === "user" ? (c) => handleEditMessage(i, c) : undefined}
+                      onResend={m.role === "user" ? () => handleResendMessage(i) : undefined}
+                    />
+                  );
+                })}
                 {isStreaming && messages[messages.length - 1]?.role === "user" && (
-                  <ThinkingIndicator avatar={meta.mascot} name={meta.name} />
+                  <ThinkingIndicator avatar={mascotFor(variant, "thinking")} name={meta.name} />
                 )}
               </>
             )}

@@ -362,7 +362,37 @@
   will-change: transform;
 }
 
+/* Mood reactions */
+.mood-fx-blush {
+  animation: mood-blush 2.6s ease-in-out infinite;
+  filter: drop-shadow(0 10px 34px hsl(340 90% 65% / .55));
+}
+@keyframes mood-blush {
+  0%, 100% { transform: translate3d(0,0,0) rotate(-1deg); }
+  50%      { transform: translate3d(0,-4px,0) rotate(2deg); }
+}
+.mood-fx-annoyed { animation: mood-shake .5s ease-in-out infinite; filter: drop-shadow(0 10px 30px hsl(0 85% 60% / .5)); }
+@keyframes mood-shake {
+  0%, 100% { transform: translate3d(0,0,0) rotate(0); }
+  25%      { transform: translate3d(-2px,0,0) rotate(-2deg); }
+  75%      { transform: translate3d(2px,0,0) rotate(2deg); }
+}
+.mood-fx-happy { animation: mood-bounce 1.6s cubic-bezier(.3,.8,.4,1) infinite; filter: drop-shadow(0 12px 34px hsl(48 95% 62% / .5)); }
+@keyframes mood-bounce {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); }
+  40%      { transform: translate3d(0,-8px,0) scale(1.03); }
+}
+.mood-fx-thinking { animation: mood-sway 5s ease-in-out infinite; filter: drop-shadow(0 12px 34px hsl(var(--kimono-a, var(--primary)) / .5)); }
+@keyframes mood-sway {
+  0%, 100% { transform: translate3d(0,0,0) rotate(-2deg); }
+  50%      { transform: translate3d(0,-3px,0) rotate(2deg); }
+}
+.mood-badge {
+  animation: kimono-swap-in .4s cubic-bezier(.22,1,.36,1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .kimono-aurora, .kimono-beam::before, .kimono-particle, .kimono-mascot, .kimono-pulse-ring,
-  .mascot-avatar, .mascot-avatar-active, .mascot-companion { animation: none; }
+  .mascot-avatar, .mascot-avatar-active, .mascot-companion,
+  .mood-fx-blush, .mood-fx-annoyed, .mood-fx-happy, .mood-fx-thinking { animation: none; }
 }

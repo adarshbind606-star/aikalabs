@@ -14,9 +14,11 @@ interface ChatMessageProps {
   /** Optional animated mascot image used as the assistant avatar */
   avatar?: string;
   avatarAlt?: string;
+  /** Extra animation class applied to the assistant avatar (mood reaction) */
+  avatarFx?: string;
 }
 
-export function ChatMessage({ role, content, imageUrl, onEdit, onResend, avatar, avatarAlt }: ChatMessageProps) {
+export function ChatMessage({ role, content, imageUrl, onEdit, onResend, avatar, avatarAlt, avatarFx }: ChatMessageProps) {
   const isUser = role === "user";
   const [fontSize, setFontSize] = useState("medium");
   const [isEditing, setIsEditing] = useState(false);
@@ -52,7 +54,7 @@ export function ChatMessage({ role, content, imageUrl, onEdit, onResend, avatar,
   return (
     <div className={cn("group flex gap-2 px-2 py-3 sm:gap-3 sm:px-4 sm:py-4", `font-size-${fontSize}`, isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
-        <div className="mascot-avatar flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary/30 bg-primary/10">
+        <div className={cn("mascot-avatar flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary/30 bg-primary/10", avatarFx)}>
           {avatar ? (
             <img src={avatar} alt={avatarAlt || "Assistant mascot"} loading="lazy" className="h-full w-full object-cover object-top" />
           ) : (
