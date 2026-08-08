@@ -5,10 +5,9 @@ import { Button } from "@/components/ui/button";
 interface ChatInputProps {
   onSend: (message: string, imageBase64?: string) => void;
   disabled: boolean;
-  placeholder?: string;
 }
 
-export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
+export function ChatInput({ onSend, disabled }: ChatInputProps) {
   const [input, setInput] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
@@ -59,10 +58,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="border-t border-border bg-background p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:p-4"
-    >
+    <form onSubmit={handleSubmit} className="border-t border-border bg-background p-4">
       <div className="mx-auto max-w-3xl">
         {imagePreview && (
           <div className="mb-2 inline-flex items-start gap-1">
@@ -101,16 +97,16 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={placeholder ?? "Ask Aika anything or attach an image..."}
+            placeholder="Ask Aika anything or attach an image..."
             rows={1}
             disabled={disabled}
-            className="min-w-0 flex-1 resize-none bg-transparent px-2 py-1.5 text-base outline-none placeholder:text-muted-foreground disabled:opacity-50 sm:text-sm"
+            className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
           />
           <Button type="submit" size="icon" disabled={disabled || (!input.trim() && !imageBase64)} className="shrink-0 rounded-xl">
             <Send className="h-4 w-4" />
           </Button>
         </div>
-        <p className="mt-2 hidden text-center text-xs text-muted-foreground sm:block">
+        <p className="mt-2 text-center text-xs text-muted-foreground">
           Aika can make mistakes. Use the Images tab for image generation 🌸
         </p>
       </div>
