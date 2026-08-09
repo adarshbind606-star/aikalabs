@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/hooks/useAuth";
+import { AnimeThemeProvider } from "@/hooks/useAnimeTheme";
 import Chat from "./pages/Chat";
 import ImageGen from "./pages/ImageGen";
 import Settings from "./pages/Settings";
@@ -20,6 +21,7 @@ const queryClient = new QueryClient();
 const App = () => (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
     <QueryClientProvider client={queryClient}>
+      <AnimeThemeProvider>
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
@@ -39,6 +41,7 @@ const App = () => (
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
+      </AnimeThemeProvider>
     </QueryClientProvider>
   </ThemeProvider>
 );
