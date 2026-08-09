@@ -8,7 +8,7 @@ import { ChatInput } from "@/components/ChatInput";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Cherry, Share2, Download } from "lucide-react";
+import { Cherry, Share2, Download, BookOpen, Code2, Search, Palette } from "lucide-react";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -35,6 +35,7 @@ interface Conversation {
 
 export default function Chat() {
   const { session, user, loading } = useAuth();
+  const [displayName, setDisplayName] = useState<string>("");
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -45,6 +46,18 @@ export default function Chat() {
 
   useEffect(() => {
     if (user) loadConversations();
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        setDisplayName(data?.display_name || user.email?.split("@")[0] || "");
+      });
   }, [user]);
 
   useEffect(() => {
