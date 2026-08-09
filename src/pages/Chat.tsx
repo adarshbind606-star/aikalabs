@@ -33,9 +33,26 @@ interface Conversation {
   updated_at: string;
 }
 
+const QUICK_ACTIONS = [
+  { label: "Study", emoji: "📚", icon: BookOpen, hint: "Explain or quiz me", prompt: "Help me study — explain a topic step by step and quiz me on it." },
+  { label: "Code", emoji: "💻", icon: Code2, hint: "Build & debug", prompt: "Help me write and debug some code." },
+  { label: "Research", emoji: "🔎", icon: Search, hint: "Dig into a topic", prompt: "Research a topic for me and summarise the key findings." },
+  { label: "Create", emoji: "🎨", icon: Palette, hint: "Ideas & stories", prompt: "Let's create something — brainstorm creative ideas with me." },
+];
+
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 5) return { text: "Still awake", emoji: "🌙" };
+  if (h < 12) return { text: "Good morning", emoji: "🌸" };
+  if (h < 17) return { text: "Good afternoon", emoji: "☀️" };
+  if (h < 22) return { text: "Good evening", emoji: "🌇" };
+  return { text: "Good night", emoji: "🌙" };
+}
+
 export default function Chat() {
   const { session, user, loading } = useAuth();
   const [displayName, setDisplayName] = useState<string>("");
+  const greeting = getGreeting();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
