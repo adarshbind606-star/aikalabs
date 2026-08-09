@@ -7,7 +7,9 @@ import { AvatarEditor } from "@/components/AvatarEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { ANIME_THEMES, AMBIENT_BACKGROUNDS, AmbientId } from "@/lib/anime-themes";
+import { useAnimeTheme } from "@/hooks/useAnimeTheme";
+import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -37,6 +39,7 @@ const MODELS = [
 export default function Settings() {
   const { session, user, loading } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { themeId, setThemeId, ambient, setAmbient } = useAnimeTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [desktopSidebarHidden, setDesktopSidebarHidden] = useState(false);
 
@@ -217,15 +220,55 @@ export default function Settings() {
               </div>
               <Separator />
               <div className="space-y-4 rounded-xl border border-border bg-card p-4">
-                <div className="flex items-center justify-between">
+                <div className="space-y-3">
                   <div>
-                    <p className="text-sm font-medium text-foreground">Dark Mode</p>
-                    <p className="text-xs text-muted-foreground">Toggle between light and dark themes</p>
+                    <p className="text-sm font-medium text-foreground">Anime Theme</p>
+                    <p className="text-xs text-muted-foreground">Pick the world your Aika lives in</p>
                   </div>
-                  <Switch
-                    checked={theme === "dark"}
-                    onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-                  />
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {ANIME_THEMES.map((t) => (
+                      <button
+                        key={t.id}
+                        onClick={() => setThemeId(t.id)}
+                        className={cn(
+                          "group rounded-lg border p-2 text-left transition-all hover:border-primary/60",
+                          themeId === t.id ? "border-primary ring-2 ring-primary/40" : "border-border"
+                        )}
+                      >
+                        <div className="mb-2 flex h-7 overflow-hidden rounded-md">
+                          {t.swatch.map((c) => (
+                            <span key={c} className="flex-1" style={{ background: c }} />
+                          ))}
+                        </div>
+                        <p className="truncate text-xs font-medium text-foreground">
+                          {t.emoji} {t.name}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <Separator />
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Animated Background</p>
+                    <p className="text-xs text-muted-foreground">Ambient motion across the app</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {AMBIENT_BACKGROUNDS.map((b) => (
+                      <button
+                        key={b.id}
+                        onClick={() => setAmbient(b.id as AmbientId)}
+                        className={cn(
+                          "rounded-full border px-3 py-1.5 text-xs transition-colors",
+                          ambient === b.id
+                            ? "border-primary bg-primary/15 text-primary"
+                            : "border-border text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        {b.emoji} {b.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <Separator />
                 <div className="flex items-center justify-between">

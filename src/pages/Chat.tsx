@@ -8,7 +8,7 @@ import { ChatInput } from "@/components/ChatInput";
 import { SakuraPetals } from "@/components/SakuraPetals";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
-import { Cherry, Share2, Download } from "lucide-react";
+import { Cherry, Share2, Download, BookOpen, Code2, Search, Palette } from "lucide-react";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -33,8 +33,26 @@ interface Conversation {
   updated_at: string;
 }
 
+const QUICK_ACTIONS = [
+  { label: "Study", emoji: "📚", icon: BookOpen, hint: "Explain or quiz me", prompt: "Help me study — explain a topic step by step and quiz me on it." },
+  { label: "Code", emoji: "💻", icon: Code2, hint: "Build & debug", prompt: "Help me write and debug some code." },
+  { label: "Research", emoji: "🔎", icon: Search, hint: "Dig into a topic", prompt: "Research a topic for me and summarise the key findings." },
+  { label: "Create", emoji: "🎨", icon: Palette, hint: "Ideas & stories", prompt: "Let's create something — brainstorm creative ideas with me." },
+];
+
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 5) return { text: "Still awake", emoji: "🌙" };
+  if (h < 12) return { text: "Good morning", emoji: "🌸" };
+  if (h < 17) return { text: "Good afternoon", emoji: "☀️" };
+  if (h < 22) return { text: "Good evening", emoji: "🌇" };
+  return { text: "Good night", emoji: "🌙" };
+}
+
 export default function Chat() {
   const { session, user, loading } = useAuth();
+  const [displayName, setDisplayName] = useState<string>("");
+  const greeting = getGreeting();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -45,6 +63,18 @@ export default function Chat() {
 
   useEffect(() => {
     if (user) loadConversations();
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        setDisplayName(data?.display_name || user.email?.split("@")[0] || "");
+      });
   }, [user]);
 
   useEffect(() => {
@@ -287,18 +317,33 @@ export default function Chat() {
         </header>
 
         {!activeConvoId && messages.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-              <Cherry className="h-12 w-12 text-primary" />
+          <>
+            <div className="flex flex-1 flex-col items-center justify-center gap-6 p-8">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 kimono-pulse-ring">
+                <Cherry className="h-9 w-9 text-primary" />
+              </div>
+              <div className="space-y-2 text-center">
+                <h2 className="font-display text-3xl text-primary sm:text-4xl">
+                  {greeting.emoji} {greeting.text}{displayName ? `, ${displayName}` : ""}!
+                </h2>
+                <p className="text-muted-foreground">What shall we do today?</p>
+              </div>
+              <div className="grid w-full max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
+                {QUICK_ACTIONS.map((a) => (
+                  <button
+                    key={a.label}
+                    onClick={() => handleSend(a.prompt)}
+                    className="group flex flex-col items-center gap-2 rounded-xl border border-border bg-card/60 p-4 text-center transition-all hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-elegant"
+                  >
+                    <a.icon className="h-5 w-5 text-primary transition-transform group-hover:scale-110" />
+                    <span className="text-sm font-medium text-foreground">{a.emoji} {a.label}</span>
+                    <span className="text-[11px] leading-tight text-muted-foreground">{a.hint}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-            <h2 className="font-display text-2xl text-primary">Welcome to Aika-AI!</h2>
-            <p className="max-w-md text-center text-muted-foreground">
-              I'm your anime-themed AI assistant 🌸 Ask me anything, or tell me to generate an image!
-            </p>
-            <Button onClick={createConversation} className="gap-2">
-              Start a New Chat
-            </Button>
-          </div>
+            <ChatInput onSend={handleSend} disabled={isStreaming} />
+          </>
         ) : (
           <>
             <ScrollArea className="flex-1">

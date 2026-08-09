@@ -340,3 +340,331 @@
 @media (prefers-reduced-motion: reduce) {
   .kimono-aurora, .kimono-beam::before, .kimono-particle, .kimono-mascot, .kimono-pulse-ring { animation: none; }
 }
+
+/* ===== Anime UI Themes ===== */
+.anime-theme {
+  --sidebar-background: var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--secondary);
+  --sidebar-accent-foreground: var(--secondary-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+  transition: background-color .5s ease, color .5s ease;
+}
+.theme-sakura-night {
+  --background: 240 40% 5%;
+  --foreground: 40 30% 94%;
+  --card: 240 40% 9%;
+  --card-foreground: 40 30% 94%;
+  --popover: 240 40% 8%;
+  --popover-foreground: 40 30% 94%;
+  --primary: 340 72% 70%;
+  --primary-foreground: 240 40% 6%;
+  --secondary: 240 40% 14%;
+  --secondary-foreground: 40 30% 94%;
+  --muted: 240 40% 12%;
+  --muted-foreground: 40 20% 68%;
+  --accent: 44 78% 68%;
+  --accent-foreground: 240 40% 6%;
+  --border: 240 40% 18%;
+  --input: 240 40% 16%;
+  --ring: 340 72% 70%;
+  --theme-a: 340 72% 70%;
+  --theme-b: 44 78% 68%;
+  --theme-glow: 340 72% 82%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(340 72% 70% / 0.3) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(44 78% 68% / 0.24) 0%, transparent 55%), hsl(240 40% 5%);
+  --gradient-ink: linear-gradient(135deg, hsl(340 72% 70%), hsl(44 78% 68%));
+  --shadow-elegant: 0 40px 100px -30px hsl(340 72% 70% / 0.45);
+}
+.theme-cyber-tokyo {
+  --background: 250 55% 6%;
+  --foreground: 190 40% 95%;
+  --card: 250 55% 10%;
+  --card-foreground: 190 40% 95%;
+  --popover: 250 55% 9%;
+  --popover-foreground: 190 40% 95%;
+  --primary: 320 100% 64%;
+  --primary-foreground: 250 55% 6%;
+  --secondary: 250 55% 15%;
+  --secondary-foreground: 190 40% 95%;
+  --muted: 250 55% 13%;
+  --muted-foreground: 190 30% 68%;
+  --accent: 188 100% 58%;
+  --accent-foreground: 250 55% 6%;
+  --border: 250 55% 19%;
+  --input: 250 55% 17%;
+  --ring: 320 100% 64%;
+  --theme-a: 320 100% 64%;
+  --theme-b: 188 100% 58%;
+  --theme-glow: 320 100% 76%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(320 100% 64% / 0.3) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(188 100% 58% / 0.24) 0%, transparent 55%), hsl(250 55% 6%);
+  --gradient-ink: linear-gradient(135deg, hsl(320 100% 64%), hsl(188 100% 58%));
+  --shadow-elegant: 0 40px 100px -30px hsl(320 100% 64% / 0.45);
+}
+.theme-dreamy-sky {
+  --background: 205 80% 97%;
+  --foreground: 220 40% 18%;
+  --card: 205 80% 93%;
+  --card-foreground: 220 40% 18%;
+  --popover: 205 80% 94%;
+  --popover-foreground: 220 40% 18%;
+  --primary: 205 85% 52%;
+  --primary-foreground: 205 80% 98%;
+  --secondary: 205 80% 88%;
+  --secondary-foreground: 220 40% 18%;
+  --muted: 205 80% 90%;
+  --muted-foreground: 220 30% 38%;
+  --accent: 330 80% 72%;
+  --accent-foreground: 205 80% 98%;
+  --border: 205 80% 84%;
+  --input: 205 80% 86%;
+  --ring: 205 85% 52%;
+  --theme-a: 205 85% 52%;
+  --theme-b: 330 80% 72%;
+  --theme-glow: 205 85% 64%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(205 85% 52% / 0.18) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(330 80% 72% / 0.16) 0%, transparent 55%), hsl(205 80% 97%);
+  --gradient-ink: linear-gradient(135deg, hsl(205 85% 52%), hsl(330 80% 72%));
+  --shadow-elegant: 0 40px 100px -30px hsl(205 85% 52% / 0.45);
+}
+.theme-moonlit-shrine {
+  --background: 230 38% 8%;
+  --foreground: 45 25% 92%;
+  --card: 230 38% 12%;
+  --card-foreground: 45 25% 92%;
+  --popover: 230 38% 11%;
+  --popover-foreground: 45 25% 92%;
+  --primary: 45 85% 72%;
+  --primary-foreground: 230 38% 6%;
+  --secondary: 230 38% 17%;
+  --secondary-foreground: 45 25% 92%;
+  --muted: 230 38% 15%;
+  --muted-foreground: 45 15% 68%;
+  --accent: 210 45% 72%;
+  --accent-foreground: 230 38% 6%;
+  --border: 230 38% 21%;
+  --input: 230 38% 19%;
+  --ring: 45 85% 72%;
+  --theme-a: 45 85% 72%;
+  --theme-b: 210 45% 72%;
+  --theme-glow: 45 85% 84%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(45 85% 72% / 0.3) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(210 45% 72% / 0.24) 0%, transparent 55%), hsl(230 38% 8%);
+  --gradient-ink: linear-gradient(135deg, hsl(45 85% 72%), hsl(210 45% 72%));
+  --shadow-elegant: 0 40px 100px -30px hsl(45 85% 72% / 0.45);
+}
+.theme-neon-city {
+  --background: 275 50% 5%;
+  --foreground: 300 25% 95%;
+  --card: 275 50% 9%;
+  --card-foreground: 300 25% 95%;
+  --popover: 275 50% 8%;
+  --popover-foreground: 300 25% 95%;
+  --primary: 300 100% 66%;
+  --primary-foreground: 275 50% 6%;
+  --secondary: 275 50% 14%;
+  --secondary-foreground: 300 25% 95%;
+  --muted: 275 50% 12%;
+  --muted-foreground: 300 15% 68%;
+  --accent: 165 100% 52%;
+  --accent-foreground: 275 50% 6%;
+  --border: 275 50% 18%;
+  --input: 275 50% 16%;
+  --ring: 300 100% 66%;
+  --theme-a: 300 100% 66%;
+  --theme-b: 165 100% 52%;
+  --theme-glow: 300 100% 78%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(300 100% 66% / 0.3) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(165 100% 52% / 0.24) 0%, transparent 55%), hsl(275 50% 5%);
+  --gradient-ink: linear-gradient(135deg, hsl(300 100% 66%), hsl(165 100% 52%));
+  --shadow-elegant: 0 40px 100px -30px hsl(300 100% 66% / 0.45);
+}
+.theme-anime-school {
+  --background: 35 45% 97%;
+  --foreground: 25 30% 18%;
+  --card: 35 45% 93%;
+  --card-foreground: 25 30% 18%;
+  --popover: 35 45% 94%;
+  --popover-foreground: 25 30% 18%;
+  --primary: 15 80% 56%;
+  --primary-foreground: 35 45% 98%;
+  --secondary: 35 45% 88%;
+  --secondary-foreground: 25 30% 18%;
+  --muted: 35 45% 90%;
+  --muted-foreground: 25 20% 38%;
+  --accent: 210 65% 52%;
+  --accent-foreground: 35 45% 98%;
+  --border: 35 45% 84%;
+  --input: 35 45% 86%;
+  --ring: 15 80% 56%;
+  --theme-a: 15 80% 56%;
+  --theme-b: 210 65% 52%;
+  --theme-glow: 15 80% 68%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(15 80% 56% / 0.18) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(210 65% 52% / 0.16) 0%, transparent 55%), hsl(35 45% 97%);
+  --gradient-ink: linear-gradient(135deg, hsl(15 80% 56%), hsl(210 65% 52%));
+  --shadow-elegant: 0 40px 100px -30px hsl(15 80% 56% / 0.45);
+}
+.theme-traditional-japan {
+  --background: 30 35% 95%;
+  --foreground: 20 30% 16%;
+  --card: 30 35% 91%;
+  --card-foreground: 20 30% 16%;
+  --popover: 30 35% 92%;
+  --popover-foreground: 20 30% 16%;
+  --primary: 0 65% 45%;
+  --primary-foreground: 30 35% 98%;
+  --secondary: 30 35% 86%;
+  --secondary-foreground: 20 30% 16%;
+  --muted: 30 35% 88%;
+  --muted-foreground: 20 20% 38%;
+  --accent: 20 30% 32%;
+  --accent-foreground: 30 35% 98%;
+  --border: 30 35% 82%;
+  --input: 30 35% 84%;
+  --ring: 0 65% 45%;
+  --theme-a: 0 65% 45%;
+  --theme-b: 20 30% 32%;
+  --theme-glow: 0 65% 57%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(0 65% 45% / 0.18) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(20 30% 32% / 0.16) 0%, transparent 55%), hsl(30 35% 95%);
+  --gradient-ink: linear-gradient(135deg, hsl(0 65% 45%), hsl(20 30% 32%));
+  --shadow-elegant: 0 40px 100px -30px hsl(0 65% 45% / 0.45);
+}
+.theme-dark-fantasy {
+  --background: 272 25% 6%;
+  --foreground: 270 15% 92%;
+  --card: 272 25% 10%;
+  --card-foreground: 270 15% 92%;
+  --popover: 272 25% 9%;
+  --popover-foreground: 270 15% 92%;
+  --primary: 350 72% 54%;
+  --primary-foreground: 272 25% 6%;
+  --secondary: 272 25% 15%;
+  --secondary-foreground: 270 15% 92%;
+  --muted: 272 25% 13%;
+  --muted-foreground: 270 10% 68%;
+  --accent: 40 65% 58%;
+  --accent-foreground: 272 25% 6%;
+  --border: 272 25% 19%;
+  --input: 272 25% 17%;
+  --ring: 350 72% 54%;
+  --theme-a: 350 72% 54%;
+  --theme-b: 40 65% 58%;
+  --theme-glow: 350 72% 66%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(350 72% 54% / 0.3) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(40 65% 58% / 0.24) 0%, transparent 55%), hsl(272 25% 6%);
+  --gradient-ink: linear-gradient(135deg, hsl(350 72% 54%), hsl(40 65% 58%));
+  --shadow-elegant: 0 40px 100px -30px hsl(350 72% 54% / 0.45);
+}
+.theme-magical-girl {
+  --background: 292 45% 8%;
+  --foreground: 300 30% 96%;
+  --card: 292 45% 12%;
+  --card-foreground: 300 30% 96%;
+  --popover: 292 45% 11%;
+  --popover-foreground: 300 30% 96%;
+  --primary: 315 92% 74%;
+  --primary-foreground: 292 45% 6%;
+  --secondary: 292 45% 17%;
+  --secondary-foreground: 300 30% 96%;
+  --muted: 292 45% 15%;
+  --muted-foreground: 300 20% 68%;
+  --accent: 190 90% 70%;
+  --accent-foreground: 292 45% 6%;
+  --border: 292 45% 21%;
+  --input: 292 45% 19%;
+  --ring: 315 92% 74%;
+  --theme-a: 315 92% 74%;
+  --theme-b: 190 90% 70%;
+  --theme-glow: 315 92% 86%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(315 92% 74% / 0.3) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(190 90% 70% / 0.24) 0%, transparent 55%), hsl(292 45% 8%);
+  --gradient-ink: linear-gradient(135deg, hsl(315 92% 74%), hsl(190 90% 70%));
+  --shadow-elegant: 0 40px 100px -30px hsl(315 92% 74% / 0.45);
+}
+.theme-futuristic-android {
+  --background: 200 22% 7%;
+  --foreground: 195 25% 94%;
+  --card: 200 22% 11%;
+  --card-foreground: 195 25% 94%;
+  --popover: 200 22% 10%;
+  --popover-foreground: 195 25% 94%;
+  --primary: 185 100% 56%;
+  --primary-foreground: 200 22% 6%;
+  --secondary: 200 22% 16%;
+  --secondary-foreground: 195 25% 94%;
+  --muted: 200 22% 14%;
+  --muted-foreground: 195 15% 68%;
+  --accent: 220 18% 72%;
+  --accent-foreground: 200 22% 6%;
+  --border: 200 22% 20%;
+  --input: 200 22% 18%;
+  --ring: 185 100% 56%;
+  --theme-a: 185 100% 56%;
+  --theme-b: 220 18% 72%;
+  --theme-glow: 185 100% 68%;
+  --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(185 100% 56% / 0.3) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, hsl(220 18% 72% / 0.24) 0%, transparent 55%), hsl(200 22% 7%);
+  --gradient-ink: linear-gradient(135deg, hsl(185 100% 56%), hsl(220 18% 72%));
+  --shadow-elegant: 0 40px 100px -30px hsl(185 100% 56% / 0.45);
+}
+
+/* ===== Animated Backgrounds ===== */
+.ambient-layer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+}
+.amb {
+  position: absolute; top: 0; pointer-events: none;
+  will-change: transform, opacity;
+  transform: translateZ(0); backface-visibility: hidden;
+}
+
+/* falling / drifting */
+@keyframes amb-fall {
+  0%   { transform: translate3d(0, -12vh, 0) rotate(0deg); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translate3d(80px, 112vh, 0) rotate(720deg); opacity: 0; }
+}
+@keyframes amb-fall-straight {
+  0%   { transform: translate3d(0, -12vh, 0); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translate3d(10px, 112vh, 0); opacity: 0; }
+}
+@keyframes amb-float-up {
+  0%   { transform: translate3d(0, 110vh, 0) scale(.6); opacity: 0; }
+  10%  { opacity: .9; }
+  90%  { opacity: .7; }
+  100% { transform: translate3d(40px, -10vh, 0) scale(1.1); opacity: 0; }
+}
+@keyframes amb-twinkle {
+  0%, 100% { opacity: .15; transform: scale(.8); }
+  50%      { opacity: 1;   transform: scale(1.25); }
+}
+@keyframes amb-firefly {
+  0%   { transform: translate3d(0,0,0); opacity: .1; }
+  25%  { transform: translate3d(40px,-50px,0); opacity: 1; }
+  50%  { transform: translate3d(-30px,-90px,0); opacity: .5; }
+  75%  { transform: translate3d(50px,-140px,0); opacity: 1; }
+  100% { transform: translate3d(0,-200px,0); opacity: 0; }
+}
+@keyframes amb-cloud {
+  0%   { transform: translate3d(-30vw,0,0); opacity: 0; }
+  10%  { opacity: .55; }
+  90%  { opacity: .55; }
+  100% { transform: translate3d(120vw,0,0); opacity: 0; }
+}
+@keyframes amb-shoot {
+  0%   { transform: translate3d(0,0,0) rotate(35deg) scaleX(0); opacity: 0; }
+  6%   { opacity: 1; transform: translate3d(6vw,6vh,0) rotate(35deg) scaleX(1); }
+  30%  { transform: translate3d(70vw,70vh,0) rotate(35deg) scaleX(1); opacity: 0; }
+  100% { transform: translate3d(70vw,70vh,0) rotate(35deg) scaleX(0); opacity: 0; }
+}
+
+.amb-petal   { border-radius: 50% 0 50% 0; background: radial-gradient(ellipse, hsl(340 80% 85%), hsl(340 60% 75%)); animation: amb-fall linear infinite; }
+.amb-particle{ border-radius: 999px; background: hsl(var(--theme-a, 340 72% 70%) / .7); box-shadow: 0 0 12px hsl(var(--theme-b, 44 78% 68%) / .7); animation: amb-float-up linear infinite; }
+.amb-firefly { border-radius: 999px; background: hsl(70 95% 70%); box-shadow: 0 0 14px 3px hsl(70 95% 65% / .8); animation: amb-firefly ease-in-out infinite; }
+.amb-rain    { width: 1.5px !important; border-radius: 2px; background: linear-gradient(to bottom, transparent, hsl(200 80% 80% / .75)); animation: amb-fall-straight linear infinite; }
+.amb-cloud   { border-radius: 999px; background: radial-gradient(ellipse at 50% 60%, hsl(0 0% 100% / .45), transparent 70%); filter: blur(6px); animation: amb-cloud linear infinite; }
+.amb-snow    { border-radius: 999px; background: hsl(0 0% 100% / .85); box-shadow: 0 0 6px hsl(200 60% 90% / .8); animation: amb-fall linear infinite; }
+.amb-star    { border-radius: 999px; background: hsl(50 100% 92%); box-shadow: 0 0 8px hsl(50 100% 85% / .9); animation: amb-twinkle ease-in-out infinite; }
+.amb-city    { border-radius: 2px; background: hsl(var(--theme-a, 320 100% 64%)); box-shadow: 0 0 14px 2px hsl(var(--theme-a, 320 100% 64%) / .8); animation: amb-twinkle ease-in-out infinite; }
+.amb-shoot   { height: 2px !important; border-radius: 999px; transform-origin: left center; background: linear-gradient(90deg, transparent, hsl(0 0% 100% / .95)); box-shadow: 0 0 12px hsl(200 100% 85% / .9); animation: amb-shoot ease-in infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .amb { animation: none !important; opacity: 0 !important; }
+}
