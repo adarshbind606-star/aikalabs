@@ -729,7 +729,7 @@
 }
 .theme-neon-city {
   --scene-sky: linear-gradient(180deg, hsl(272 60% 6%), hsl(300 55% 10%) 50%, hsl(330 60% 14%));
-  --scene-glow-img: radial-gradient(circle at 50% 62%, hsl(45 100% 65% / .95) 0 9%, hsl(320 100% 62% / .55) 9% 14%, transparent 22%);
+  --scene-glow-img: radial-gradient(circle at 50% 40%, hsl(45 100% 68% / .9) 0 7%, hsl(320 100% 62% / .5) 7% 11%, transparent 18%);
   --scene-mid: radial-gradient(ellipse at 50% 70%, hsl(300 100% 60% / .25), transparent 60%);
   --scene-fore: linear-gradient(180deg, transparent 0 6%, hsl(272 70% 4% / .96) 6%), repeating-linear-gradient(180deg, transparent 0 22px, hsl(165 100% 55% / .5) 22px 23px), repeating-linear-gradient(90deg, transparent 0 60px, hsl(165 100% 55% / .35) 60px 61px);
   --scene-fore-o: .95;
