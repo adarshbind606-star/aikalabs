@@ -670,7 +670,7 @@
 /* ===== Animated Theme Wallpapers (scenes) ===== */
 .scene-layer {
   position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-  opacity: .62; transition: opacity .6s ease;
+  opacity: .42; transition: opacity .6s ease;
 }
 .scene-layer > i {
   position: absolute; inset: -10%; display: block; content: "";
@@ -681,8 +681,10 @@
                animation: scene-drift 26s ease-in-out infinite alternate; opacity: .95; }
 .scene-mid   { background: var(--scene-mid, transparent); background-size: cover;
                animation: scene-breathe 18s ease-in-out infinite; }
-.scene-fore  { inset: auto 0 -2% 0 !important; height: 46vh; background: var(--scene-fore, transparent);
-               background-size: cover; background-position: bottom center; opacity: var(--scene-fore-o, .9); }
+.scene-fore  { inset: auto 0 -2% 0 !important; height: 30vh; background: var(--scene-fore, transparent);
+               background-size: cover; background-position: bottom center; opacity: var(--scene-fore-o, .55);
+               -webkit-mask-image: linear-gradient(to top, hsl(0 0% 0% / 1) 0%, hsl(0 0% 0% / .55) 45%, transparent 100%);
+               mask-image: linear-gradient(to top, hsl(0 0% 0% / 1) 0%, hsl(0 0% 0% / .55) 45%, transparent 100%); }
 .scene-veil  { background: var(--scene-veil, transparent); background-size: 100% 4px, cover;
                opacity: var(--scene-veil-o, .35); animation: scene-veil 9s linear infinite; }
 
