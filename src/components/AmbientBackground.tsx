@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { ThemeScene } from "@/components/ThemeScene";
 import { useAnimeTheme } from "@/hooks/useAnimeTheme";
 import type { AmbientId } from "@/lib/anime-themes";
 
@@ -80,13 +81,29 @@ export function AmbientBackground({ count = 14, kind }: { count?: number; kind?:
   const active = kind ?? ambient;
   const items = useMemo(() => build(active, count), [active, count]);
 
-  if (active === "none" || items.length === 0) return null;
+  const sways = new Set(["petals", "snow"]);
 
   return (
-    <div className="ambient-layer" aria-hidden="true">
-      {items.map((it, i) => (
-        <div key={`${active}-${i}`} className={it.cls} style={it.style} />
-      ))}
-    </div>
+    <>
+      <ThemeScene />
+      {active !== "none" && items.length > 0 && (
+        <div className="ambient-layer" aria-hidden="true">
+          {items.map((it, i) => {
+            const el = <div className={it.cls} style={it.style} />;
+            if (!sways.has(active)) return <div key={`${active}-${i}`}>{el}</div>;
+            const { left, animationDelay, ...rest } = it.style;
+            return (
+              <div
+                key={`${active}-${i}`}
+                className="amb-sway"
+                style={{ left, animationDuration: `${3 + (i % 5)}s`, animationDelay }}
+              >
+                <div className={it.cls} style={{ ...rest, animationDelay }} />
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 }
