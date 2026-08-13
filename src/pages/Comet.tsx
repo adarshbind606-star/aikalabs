@@ -3,13 +3,12 @@ import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { ChatSidebar } from "@/components/ChatSidebar";
-import { ChatMessage } from "@/components/ChatMessage";
+import { ChatMessage, ThinkingIndicator } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Code2, Zap, Sparkles, Terminal, GitBranch, Bug } from "lucide-react";
 import { CometLogo } from "@/components/CometLogo";
-import { CometBuilding, CometFailure, CometGreeting } from "@/components/CometCharacter";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -42,7 +41,6 @@ export default function Comet() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [desktopSidebarHidden, setDesktopSidebarHidden] = useState(false);
-  const [failure, setFailure] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { if (user) loadConversations(); }, [user]);
@@ -106,7 +104,6 @@ export default function Comet() {
 
   const streamResponse = useCallback(async (convoId: string, chatMessages: Msg[]) => {
     setIsStreaming(true);
-    setFailure(null);
     let assistantSoFar = "";
     const chatHistory = chatMessages.map(m => {
       if (m.image_url) {
@@ -138,7 +135,7 @@ export default function Comet() {
         setIsStreaming(false);
         if (assistantSoFar) await saveMessage(convoId, { role: "assistant", content: assistantSoFar });
       },
-      onError: (err) => { setIsStreaming(false); setFailure(err); },
+      onError: (err) => { setIsStreaming(false); toast.error(err); },
     });
   }, [user]);
 
@@ -259,7 +256,6 @@ export default function Comet() {
               <div className="absolute -inset-6 rounded-full bg-gradient-to-br from-sky-500/25 to-violet-500/25 blur-3xl" />
               <CometLogo size={160} className="comet-lg relative" />
             </div>
-            <CometGreeting />
             <h2 className="font-display text-3xl bg-gradient-to-r from-sky-300 via-fuchsia-300 to-violet-300 bg-clip-text text-transparent">
               Comet is ready to build.
             </h2>
@@ -306,19 +302,7 @@ export default function Comet() {
                     onResend={msg.role === "user" && !isStreaming ? () => handleResendMessage(i) : undefined}
                   />
                 ))}
-                {isStreaming && messages[messages.length - 1]?.role !== "assistant" && <CometBuilding />}
-                {!isStreaming && failure && (
-                  <CometFailure
-                    detail={failure}
-                    onRetry={() => {
-                      const lastUser = [...messages].reverse().findIndex((m) => m.role === "user");
-                      if (lastUser === -1 || !activeConvoId) return;
-                      setFailure(null);
-                      const idx = messages.length - 1 - lastUser;
-                      handleResendMessage(idx);
-                    }}
-                  />
-                )}
+                {isStreaming && messages[messages.length - 1]?.role !== "assistant" && <ThinkingIndicator />}
                 <div ref={scrollRef} />
               </div>
             </ScrollArea>
