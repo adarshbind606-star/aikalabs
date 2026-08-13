@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame, Sparkles } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame, Sparkles, Home } from "lucide-react";
 import { CometLogo } from "@/components/CometLogo";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,7 +27,7 @@ interface ChatSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   desktopHidden?: boolean;
-  activePage?: "chat" | "image" | "settings" | "unbound" | "comet" | "kimono";
+  activePage?: "chat" | "image" | "settings" | "unbound" | "comet" | "kimono" | "room";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -174,6 +174,21 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           >
             <Sparkles className="h-4 w-4 shrink-0" />
             <span className="truncate text-xs font-semibold tracking-wide">Kimono Labs · Raven & Frost</span>
+          </Button>
+        </div>
+
+        <div className="border-b border-sidebar-border p-2">
+          <Button
+            onClick={() => { navigate("/room"); onClose(); }}
+            className={cn(
+              "w-full gap-2 border-primary/40 text-primary hover:bg-primary/10",
+              activePage === "room" && "bg-primary/15"
+            )}
+            variant="outline"
+            size="sm"
+          >
+            <Home className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs font-semibold tracking-wide">Aika's Room</span>
           </Button>
         </div>
 
