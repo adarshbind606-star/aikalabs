@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { Settings as SettingsIcon, User, Palette, Trash2, Brain, Cherry } from "lucide-react";
+import { PERSONALITIES, PERSONALITY_KEY, getPersonality } from "@/lib/personalities";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
@@ -51,6 +52,7 @@ export default function Settings() {
   // Preferences
   const [selectedModel, setSelectedModel] = useState("kimono-zm");
   const [fontSize, setFontSize] = useState("medium");
+  const [personality, setPersonality] = useState(getPersonality());
 
   // Stats
   const [chatCount, setChatCount] = useState(0);
@@ -65,6 +67,7 @@ export default function Settings() {
       const savedFontSize = localStorage.getItem("aika-font-size") || "medium";
       setSelectedModel(savedModel);
       setFontSize(savedFontSize);
+      setPersonality(getPersonality());
     }
   }, [user]);
 
@@ -141,6 +144,7 @@ export default function Settings() {
   };
 
   const handleFontSizeChange = (value: string) => {
+    void 0;
     setFontSize(value);
     localStorage.setItem("aika-font-size", value);
     // Dispatch storage event so ChatMessage picks it up in the same tab
