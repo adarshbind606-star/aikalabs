@@ -144,12 +144,17 @@ export default function Settings() {
   };
 
   const handleFontSizeChange = (value: string) => {
-    void 0;
     setFontSize(value);
     localStorage.setItem("aika-font-size", value);
     // Dispatch storage event so ChatMessage picks it up in the same tab
     window.dispatchEvent(new StorageEvent("storage", { key: "aika-font-size", newValue: value }));
     toast.success("Font size updated!");
+  };
+
+  const handlePersonalityChange = (id: string) => {
+    setPersonality(id);
+    localStorage.setItem(PERSONALITY_KEY, id);
+    toast.success("Character mode updated!");
   };
 
   if (loading) return null;
@@ -290,6 +295,33 @@ export default function Settings() {
                       <SelectItem value="large">Large</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+            </section>
+
+            {/* Model Selection */}
+            <section className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Cherry className="h-5 w-5 text-primary" />
+                <h3 className="font-display text-lg text-foreground">Character Mode</h3>
+              </div>
+              <Separator />
+              <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+                <p className="text-xs text-muted-foreground">Choose Aika's personality — it changes how she talks to you.</p>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {PERSONALITIES.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => handlePersonalityChange(p.id)}
+                      className={cn(
+                        "rounded-lg border p-3 text-left transition-all hover:border-primary/60",
+                        personality === p.id ? "border-primary ring-2 ring-primary/40" : "border-border"
+                      )}
+                    >
+                      <p className="text-sm font-medium text-foreground">{p.emoji} {p.name}</p>
+                      <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">{p.tagline}</p>
+                    </button>
+                  ))}
                 </div>
               </div>
             </section>
