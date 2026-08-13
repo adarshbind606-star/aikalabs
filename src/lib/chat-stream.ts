@@ -1,5 +1,4 @@
 import { supabase } from "@/integrations/supabase/client";
-import { getPersonality } from "@/lib/personalities";
 
 type MsgContent = string | Array<{ type: string; text?: string; image_url?: { url: string } }>;
 type Msg = { role: "user" | "assistant"; content: MsgContent };
@@ -38,14 +37,11 @@ export async function streamChat({
   const headers = await getAuthHeaders();
   const isKimono = mode === "raven" || mode === "frost";
   const url = mode === "unbound" ? UNBOUND_URL : mode === "comet" ? COMET_URL : isKimono ? KIMONO_URL : CHAT_URL;
-  const personality = getPersonality();
   const resp = await fetch(url, {
     method: "POST",
     headers,
     signal,
-    body: JSON.stringify(
-      isKimono ? { messages, variant: mode } : mode === "aika" ? { messages, personality } : { messages }
-    ),
+    body: JSON.stringify(isKimono ? { messages, variant: mode } : { messages }),
   });
 
   if (resp.status === 429) {
