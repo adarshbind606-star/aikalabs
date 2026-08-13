@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { ChatSidebar } from "@/components/ChatSidebar";
-import { ChatMessage, ThinkingIndicator } from "@/components/ChatMessage";
+import { ChatMessage } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
 import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
