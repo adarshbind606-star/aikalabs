@@ -798,3 +798,9 @@
   .amb { opacity: 0 !important; }
 }
 
+
+/* Aika Room floating idle */
+@keyframes float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
+}
