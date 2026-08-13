@@ -9,6 +9,7 @@ import { streamChat } from "@/lib/chat-stream";
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Code2, Zap, Sparkles, Terminal, GitBranch, Bug } from "lucide-react";
 import { CometLogo } from "@/components/CometLogo";
+import { CometBuilding, CometFailure, CometGreeting } from "@/components/CometCharacter";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
