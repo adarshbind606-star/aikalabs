@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply transition-colors duration-300;
+}
+
+body {
+  @apply bg-truesync-darker text-white;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-truesync-card rounded;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-truesync-accent rounded hover:bg-truesync-accent-secondary;
+}
+
+/* Glassmorphism */
+.glass {
+  @apply backdrop-blur-md bg-white/5 border border-white/10;
+}
+
+.glass-dark {
+  @apply backdrop-blur-md bg-black/20 border border-white/5;
+}
+
+/* Glow effects */
+.glow-accent {
+  @apply shadow-lg shadow-truesync-accent/20;
+}
+
+.glow-accent-bright {
+  @apply shadow-2xl shadow-truesync-accent/50;
+}
+
+.glow-error {
+  @apply shadow-lg shadow-truesync-error/20;
+}
+
+.glow-success {
+  @apply shadow-lg shadow-truesync-success/20;
+}
+
+/* Animated border */
+.animated-border {
+  @apply relative;
+}
+
+.animated-border::before {
+  @apply absolute inset-0 rounded-lg bg-gradient-to-r from-truesync-accent via-transparent to-truesync-accent-secondary;
+  @apply animate-pulse;
+  content: '';
+  z-index: -1;
+}
