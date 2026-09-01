@@ -41,17 +41,20 @@ serve(async (req) => {
 
     console.log("Generating image for prompt:", prompt);
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Enrich the prompt so results are consistently high quality
+    const enriched = `${prompt}
+
+Render this as a highly detailed, high-resolution image with clean composition, coherent anatomy and perspective, rich but natural color grading, crisp focus on the subject and tasteful depth of field. Avoid watermarks, text artifacts, distorted hands or duplicated limbs.`;
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
-        messages: [
-          { role: "user", content: prompt }
-        ],
+        model: "google/gemini-3.1-flash-image",
+        messages: [{ role: "user", content: enriched }],
         modalities: ["image", "text"],
       }),
     });
@@ -75,7 +78,10 @@ serve(async (req) => {
     }
 
     const respData = await response.json();
-    const imageUrl = respData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const b64 = respData.data?.[0]?.b64_json;
+    const imageUrl = b64
+      ? `data:image/png;base64,${b64}`
+      : respData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
     if (!imageUrl) {
       console.error("No image in response:", JSON.stringify(respData).slice(0, 500));
@@ -87,6 +93,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ imageUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (e) {
     console.error("generate-image error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {

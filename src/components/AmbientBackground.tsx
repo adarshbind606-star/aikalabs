@@ -17,11 +17,12 @@ function build(kind: AmbientId, count: number): Item[] {
 
   switch (kind) {
     case "petals":
-      for (let i = 0; i < n(1); i++) {
-        const s = rand(8, 22);
-        push("amb amb-petal", { left: `${rand(0, 100)}%`, width: s, height: s, opacity: rand(0.3, 0.8), animationDuration: `${rand(9, 20)}s`, animationDelay: `${rand(0, 12)}s` });
+      for (let i = 0; i < n(1.8); i++) {
+        const s = rand(10, 24);
+        push("amb amb-petal", { left: `${rand(0, 100)}%`, width: s, height: s * 0.85, opacity: rand(0.45, 0.95), animationDuration: `${rand(10, 22)}s`, animationDelay: `${-rand(0, 22)}s` });
       }
       break;
+
     case "particles":
       for (let i = 0; i < n(2); i++) {
         const s = rand(2, 6);
@@ -89,21 +90,26 @@ export function AmbientBackground({ count = 14, kind }: { count?: number; kind?:
       {active !== "none" && items.length > 0 && (
         <div className="ambient-layer" aria-hidden="true">
           {items.map((it, i) => {
-            const el = <div className={it.cls} style={it.style} />;
-            if (!sways.has(active)) return <div key={`${active}-${i}`}>{el}</div>;
-            const { left, animationDelay, ...rest } = it.style;
+            if (!sways.has(active)) return <div key={`${active}-${i}`} className={it.cls} style={it.style} />;
+            const { left, animationDuration, animationDelay, opacity, ...rest } = it.style;
             return (
               <div
                 key={`${active}-${i}`}
-                className="amb-sway"
-                style={{ left, animationDuration: `${3 + (i % 5)}s`, animationDelay }}
+                className="amb-drop"
+                style={{ left, animationDuration, animationDelay, opacity }}
               >
-                <div className={it.cls} style={{ ...rest, animationDelay }} />
+                <div
+                  className="amb-sway"
+                  style={{ animationDuration: `${2.6 + (i % 5) * 0.7}s`, animationDelay: `${-(i % 7) * 0.4}s` }}
+                >
+                  <div className={it.cls} style={{ ...rest, animationDuration: `${3 + (i % 4)}s` }} />
+                </div>
               </div>
             );
           })}
         </div>
       )}
     </>
+
   );
 }
