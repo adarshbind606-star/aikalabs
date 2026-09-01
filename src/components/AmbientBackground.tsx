@@ -90,21 +90,26 @@ export function AmbientBackground({ count = 14, kind }: { count?: number; kind?:
       {active !== "none" && items.length > 0 && (
         <div className="ambient-layer" aria-hidden="true">
           {items.map((it, i) => {
-            const el = <div className={it.cls} style={it.style} />;
-            if (!sways.has(active)) return <div key={`${active}-${i}`}>{el}</div>;
-            const { left, animationDelay, ...rest } = it.style;
+            if (!sways.has(active)) return <div key={`${active}-${i}`} className={it.cls} style={it.style} />;
+            const { left, animationDuration, animationDelay, opacity, ...rest } = it.style;
             return (
               <div
                 key={`${active}-${i}`}
-                className="amb-sway"
-                style={{ left, animationDuration: `${3 + (i % 5)}s`, animationDelay }}
+                className="amb-drop"
+                style={{ left, animationDuration, animationDelay, opacity }}
               >
-                <div className={it.cls} style={{ ...rest, animationDelay }} />
+                <div
+                  className="amb-sway"
+                  style={{ animationDuration: `${2.6 + (i % 5) * 0.7}s`, animationDelay: `${-(i % 7) * 0.4}s` }}
+                >
+                  <div className={it.cls} style={{ ...rest, animationDuration: `${3 + (i % 4)}s` }} />
+                </div>
               </div>
             );
           })}
         </div>
       )}
     </>
+
   );
 }
