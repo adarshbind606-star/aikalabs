@@ -773,25 +773,47 @@
 }
 
 /* ===== Anime-style ambient particles (refined) ===== */
-.amb-sway { position: absolute; top: 0; will-change: transform; animation: amb-sway ease-in-out infinite alternate; }
+.amb-drop {
+  position: absolute; top: -14vh; will-change: transform;
+  animation: amb-drop-fall linear infinite;
+  transform: translateZ(0); backface-visibility: hidden;
+}
+@keyframes amb-drop-fall {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(0, 128vh, 0); }
+}
+.amb-sway {
+  position: relative; display: block; will-change: transform;
+  animation: amb-sway ease-in-out infinite alternate;
+}
 @keyframes amb-sway {
-  0%   { transform: translate3d(-26px,0,0); }
-  100% { transform: translate3d(26px,0,0); }
+  0%   { transform: translate3d(-22px,0,0); }
+  100% { transform: translate3d(22px,0,0); }
+}
+.amb-drop .amb-petal,
+.amb-drop .amb-snow {
+  position: relative !important; top: auto !important; left: auto !important;
 }
 .amb-petal {
   border-radius: 100% 0 100% 0 !important;
-  background: linear-gradient(135deg, hsl(340 100% 92%), hsl(338 78% 78% ) 60%, hsl(332 62% 68%));
-  box-shadow: 0 0 8px hsl(340 80% 78% / .45);
-  animation: amb-petal-fall linear infinite !important;
+  background: linear-gradient(135deg, hsl(340 100% 94%), hsl(338 80% 80%) 55%, hsl(330 64% 70%));
+  box-shadow: 0 0 6px hsl(340 80% 78% / .35);
+  animation: amb-petal-spin linear infinite !important;
 }
-@keyframes amb-petal-fall {
-  0%   { transform: translate3d(0,-12vh,0) rotate3d(1,1,0,0deg); opacity: 0; }
-  8%   { opacity: 1; }
-  100% { transform: translate3d(0,112vh,0) rotate3d(1,1,.3,1080deg); opacity: 0; }
+@keyframes amb-petal-spin {
+  0%   { transform: rotate3d(1,.6,.2,0deg); }
+  100% { transform: rotate3d(1,.6,.2,360deg); }
 }
-.amb-snow { filter: blur(.3px); animation: amb-fall-straight linear infinite !important; }
-.amb-rain::after { content: ""; }
+.amb-snow {
+  filter: blur(.3px);
+  animation: amb-snow-pulse ease-in-out infinite alternate !important;
+}
+@keyframes amb-snow-pulse {
+  0%   { transform: scale(.85); }
+  100% { transform: scale(1.15); }
+}
 .amb-firefly { filter: blur(.2px); }
+
 
 @media (prefers-reduced-motion: reduce) {
   .amb, .amb-sway, .scene-glow, .scene-mid, .scene-veil { animation: none !important; }
