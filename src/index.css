@@ -816,7 +816,9 @@
 
 
 @media (prefers-reduced-motion: reduce) {
-  .amb, .amb-sway, .scene-glow, .scene-mid, .scene-veil { animation: none !important; }
+  .amb, .amb-sway, .amb-drop, .scene-glow, .scene-mid, .scene-veil { animation: none !important; }
+  .amb-drop { display: none !important; }
   .amb { opacity: 0 !important; }
 }
+
 
