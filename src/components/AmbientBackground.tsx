@@ -17,11 +17,12 @@ function build(kind: AmbientId, count: number): Item[] {
 
   switch (kind) {
     case "petals":
-      for (let i = 0; i < n(1); i++) {
-        const s = rand(8, 22);
-        push("amb amb-petal", { left: `${rand(0, 100)}%`, width: s, height: s, opacity: rand(0.3, 0.8), animationDuration: `${rand(9, 20)}s`, animationDelay: `${rand(0, 12)}s` });
+      for (let i = 0; i < n(1.8); i++) {
+        const s = rand(10, 24);
+        push("amb amb-petal", { left: `${rand(0, 100)}%`, width: s, height: s * 0.85, opacity: rand(0.45, 0.95), animationDuration: `${rand(10, 22)}s`, animationDelay: `${-rand(0, 22)}s` });
       }
       break;
+
     case "particles":
       for (let i = 0; i < n(2); i++) {
         const s = rand(2, 6);
