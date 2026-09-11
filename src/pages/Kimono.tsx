@@ -58,8 +58,8 @@ const VARIANTS: Record<Variant, {
   },
   frost: {
     name: "kimono-frost",
-    tagline: "Crystal clarity · instant answers",
-    blurb: "Frost is the fast, immaculate one — clean explanations, tight code, structured summaries, zero padding.",
+    tagline: "Crystal clarity · instant execution",
+    blurb: "Same frontier brain, tuned for speed. Frost ships the finished thing fast — tight code, clean docs, spreadsheets, structured output, zero padding.",
     icon: Snowflake,
     accent: "from-cyan-200 via-sky-300 to-teal-200",
     chip: "border-cyan-400/40 bg-cyan-400/10 text-cyan-200",
