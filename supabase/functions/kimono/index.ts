@@ -140,6 +140,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: persona.model,
         messages: [{ role: "system", content: persona.system }, ...messages],
+        reasoning_effort: persona.effort,
         stream: true,
       }),
     });
