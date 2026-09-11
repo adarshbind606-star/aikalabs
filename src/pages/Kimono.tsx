@@ -50,10 +50,10 @@ const VARIANTS: Record<Variant, {
     mascot: ravenMascot,
     theme: "kimono-raven",
     prompts: [
-      "Design a fault-tolerant event pipeline for 50k events/sec and justify every trade-off.",
+      "Design a fault-tolerant event pipeline for 50k events/sec, write the core service and justify every trade-off.",
       "Prove or disprove: every bounded sequence has a convergent subsequence.",
-      "Stress-test my go-to-market plan and find the three assumptions most likely to be wrong.",
-      "Compare three architectures for multi-tenant billing with risks and failure modes.",
+      "Research the best CS universities, compare requirements and hand me a shortlist as a spreadsheet.",
+      "Here's my project brief — plan it, build the architecture, then review your own design for failure modes.",
     ],
   },
   frost: {
