@@ -40,8 +40,8 @@ const VARIANTS: Record<Variant, {
 }> = {
   raven: {
     name: "kimono-raven",
-    tagline: "Deep reasoning · long-horizon thinking",
-    blurb: "Raven takes the hard ones — proofs, strategy, architecture, ambiguous research problems. Slower, deeper, sharper.",
+    tagline: "Deep reasoning · end-to-end work",
+    blurb: "Give Raven a goal, not a question. Proofs, architecture, large codebases, research and full documents — planned, built, self-reviewed and delivered finished.",
     icon: Bird,
     accent: "from-violet-300 via-fuchsia-300 to-indigo-300",
     chip: "border-violet-400/40 bg-violet-400/10 text-violet-200",
