@@ -69,9 +69,9 @@ const VARIANTS: Record<Variant, {
     theme: "kimono-frost",
     prompts: [
       "Explain vector databases in 150 words with one table.",
-      "Summarize this into 5 bullets and a next-action list.",
-      "Write a typed React hook for debounced search with tests.",
-      "Turn these messy notes into a clean project brief.",
+      "Turn this messy project info into a professional presentation, slide by slide.",
+      "Write a typed React hook for debounced search with tests, then review your own code.",
+      "Convert these notes into a clean CSV budget with formulas explained.",
     ],
   },
 };
