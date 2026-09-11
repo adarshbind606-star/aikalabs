@@ -40,8 +40,8 @@ const VARIANTS: Record<Variant, {
 }> = {
   raven: {
     name: "kimono-raven",
-    tagline: "Deep reasoning · long-horizon thinking",
-    blurb: "Raven takes the hard ones — proofs, strategy, architecture, ambiguous research problems. Slower, deeper, sharper.",
+    tagline: "Deep reasoning · end-to-end work",
+    blurb: "Give Raven a goal, not a question. Proofs, architecture, large codebases, research and full documents — planned, built, self-reviewed and delivered finished.",
     icon: Bird,
     accent: "from-violet-300 via-fuchsia-300 to-indigo-300",
     chip: "border-violet-400/40 bg-violet-400/10 text-violet-200",
@@ -50,16 +50,16 @@ const VARIANTS: Record<Variant, {
     mascot: ravenMascot,
     theme: "kimono-raven",
     prompts: [
-      "Design a fault-tolerant event pipeline for 50k events/sec and justify every trade-off.",
+      "Design a fault-tolerant event pipeline for 50k events/sec, write the core service and justify every trade-off.",
       "Prove or disprove: every bounded sequence has a convergent subsequence.",
-      "Stress-test my go-to-market plan and find the three assumptions most likely to be wrong.",
-      "Compare three architectures for multi-tenant billing with risks and failure modes.",
+      "Research the best CS universities, compare requirements and hand me a shortlist as a spreadsheet.",
+      "Here's my project brief — plan it, build the architecture, then review your own design for failure modes.",
     ],
   },
   frost: {
     name: "kimono-frost",
-    tagline: "Crystal clarity · instant answers",
-    blurb: "Frost is the fast, immaculate one — clean explanations, tight code, structured summaries, zero padding.",
+    tagline: "Crystal clarity · instant execution",
+    blurb: "Same frontier brain, tuned for speed. Frost ships the finished thing fast — tight code, clean docs, spreadsheets, structured output, zero padding.",
     icon: Snowflake,
     accent: "from-cyan-200 via-sky-300 to-teal-200",
     chip: "border-cyan-400/40 bg-cyan-400/10 text-cyan-200",
@@ -69,9 +69,9 @@ const VARIANTS: Record<Variant, {
     theme: "kimono-frost",
     prompts: [
       "Explain vector databases in 150 words with one table.",
-      "Summarize this into 5 bullets and a next-action list.",
-      "Write a typed React hook for debounced search with tests.",
-      "Turn these messy notes into a clean project brief.",
+      "Turn this messy project info into a professional presentation, slide by slide.",
+      "Write a typed React hook for debounced search with tests, then review your own code.",
+      "Convert these notes into a clean CSV budget with formulas explained.",
     ],
   },
 };
