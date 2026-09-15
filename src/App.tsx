@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Unbound from "./pages/Unbound";
 import Comet from "./pages/Comet";
 import Kimono from "./pages/Kimono";
+import Projects from "./pages/Projects";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
               <Route path="/unbound" element={<Unbound />} />
               <Route path="/comet" element={<Comet />} />
               <Route path="/kimono" element={<Kimono />} />
+              <Route path="/projects" element={<Projects />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

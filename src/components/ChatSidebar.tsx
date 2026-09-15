@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame, Sparkles } from "lucide-react";
+import { Plus, MessageSquare, Trash2, LogOut, Cherry, ImagePlus, Settings, Flame, Sparkles, ClipboardList } from "lucide-react";
 import { CometLogo } from "@/components/CometLogo";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,7 +27,7 @@ interface ChatSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   desktopHidden?: boolean;
-  activePage?: "chat" | "image" | "settings" | "unbound" | "comet" | "kimono";
+  activePage?: "chat" | "image" | "settings" | "unbound" | "comet" | "kimono" | "projects";
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -177,6 +177,21 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           </Button>
         </div>
 
+        <div className="border-b border-sidebar-border p-2">
+          <Button
+            onClick={() => { navigate("/projects"); onClose(); }}
+            className={cn(
+              "w-full gap-2 border-amber-400/40 text-amber-300 hover:bg-amber-400/10 hover:text-amber-200",
+              activePage === "projects" && "bg-amber-400/15 text-amber-200"
+            )}
+            variant="outline"
+            size="sm"
+          >
+            <ClipboardList className="h-4 w-4 shrink-0" />
+            <span className="truncate text-xs font-semibold tracking-wide">Project Manager</span>
+          </Button>
+        </div>
+
         {(activePage === "chat" || activePage === "unbound" || activePage === "comet" || activePage === "kimono") && (
           <>
             <div className="p-3">
@@ -224,6 +239,14 @@ export function ChatSidebar({ conversations, activeId, onSelect, onNew, onDelete
           <div className="flex flex-1 items-center justify-center p-4">
             <p className="text-center text-sm text-muted-foreground">
               Create images by describing what you want below ✨
+            </p>
+          </div>
+        )}
+
+        {activePage === "projects" && (
+          <div className="flex flex-1 items-center justify-center p-4">
+            <p className="text-center text-sm text-muted-foreground">
+              Raven plans your projects and walks you through each step 📋
             </p>
           </div>
         )}
