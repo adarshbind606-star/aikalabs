@@ -157,6 +157,86 @@ export type Database = {
         }
         Relationships: []
       }
+      project_tasks: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          notes: string | null
+          position: number
+          project_id: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          notes?: string | null
+          position?: number
+          project_id: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          notes?: string | null
+          position?: number
+          project_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          created_at: string
+          goal: string
+          id: string
+          name: string
+          status: string
+          summary: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          goal?: string
+          id?: string
+          name?: string
+          status?: string
+          summary?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          goal?: string
+          id?: string
+          name?: string
+          status?: string
+          summary?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           activated_at: string
